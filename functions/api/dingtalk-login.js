@@ -40,8 +40,8 @@ export async function onRequest(context) {
       return jsonResponse({ error: "Missing authCode" }, 400);
     }
 
-    const DINGTALK_APP_KEY = env.DINGTALK_APP_KEY || "dingh5hm6hyz022n881m";
-    const DINGTALK_APP_SECRET = env.DINGTALK_APP_SECRET || "SDheeIfddz2y_k9v0U1jQ8fPzV7zO1o9-G5m3P3p4_Q1W2E3";
+    const DINGTALK_APP_KEY = env.DINGTALK_APP_KEY || "dingh5hmtyjgs4klkcdu";
+    const DINGTALK_APP_SECRET = env.DINGTALK_APP_SECRET || "SDheeIfdPDzoLHUFbi9EXlOh3WzPeGcWoyF2OsCeW44Z84rKxCe9-YNnthJRtMfM";
 
     let matchedUser = null;
     try {
