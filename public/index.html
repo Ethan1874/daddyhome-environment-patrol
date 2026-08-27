@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>DADDY HOME 空间教育解读与环境巡检系统</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="app-header">
+    <a href="/" class="brand-badge">
+      <div class="brand-logo-icon">M</div>
+      <div class="brand-titles">
+        <span class="brand-main-title">DADDY HOME</span>
+        <span class="brand-sub-title" id="header-role-subtitle">空间教育解读 · 蒙氏环境</span>
+      </div>
+    </a>
+    <div class="header-actions">
+      <!-- Role Badge Indicator (when teacher verified) -->
+      <div id="teacher-role-badge" style="display: none; align-items: center; gap: 4px; background: var(--primary-light); color: var(--primary); font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 12px; border: 1px solid rgba(101,64,150,0.2);">
+        <span>👩‍🏫 教师模式</span>
+      </div>
+
+      <button id="area-switch-btn" class="area-switch-btn" type="button">
+        <span id="current-area-btn-text">园所大厅</span>
+        <span>▾</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="app-container">
+
+    <!-- Heytea-Style Hero Specimen Card -->
+    <section class="heytea-badge-container" id="hero-badge-card">
+      <div class="washi-tape-top"></div>
+      
+      <div class="badge-top-bar">
+        <span class="badge-campus-tag">MONTESSORI PREPARED ENVIRONMENT</span>
+        <span class="badge-serial" id="hero-serial">ZONE · 01</span>
+      </div>
+
+      <div class="badge-main-header">
+        <div class="badge-title-group">
+          <h1 class="badge-title-cn" id="hero-title-cn">园所大厅</h1>
+          <div class="badge-title-en" id="hero-title-en">Family Hub & Welcome Hall · AREA-CLH</div>
+        </div>
+        <div class="badge-doodle-icon" id="hero-doodle">🏡</div>
+      </div>
+
+      <div class="badge-handwritten-quote" id="hero-handwritten">
+        「从家庭过渡到园所的第一道温柔缓冲带」
+      </div>
+      
+      <div class="badge-tags-strip" id="hero-tags">
+        <span class="badge-tag-pill">[ 秩序 ]</span>
+        <span class="badge-tag-pill">[ 温馨 ]</span>
+        <span class="badge-tag-pill">[ 连接 ]</span>
+      </div>
+
+      <div style="background: #ffffff; border: 1px solid var(--paper-border); border-radius: 8px; padding: 8px 12px; font-size: 12px; color: #15803d; font-weight: 600; display: flex; align-items: center; gap: 6px;">
+        <span style="font-size: 14px;">🛡️</span>
+        <span>今日环境已巡检 · 安全合规与物品归位守护中</span>
+      </div>
+    </section>
+
+    <!-- Dual-Mode View Switcher Tabs (Visible when Teacher Mode is Unlocked) -->
+    <nav class="view-tabs" id="teacher-view-tabs" style="display: none;">
+      <button id="tab-edu-btn" class="tab-btn" type="button">
+        <span>📖</span>
+        <span>空间教育解读 (家长视角)</span>
+      </button>
+      <button id="tab-patrol-btn" class="tab-btn active" type="button">
+        <span>📋</span>
+        <span>教师巡检打卡</span>
+      </button>
+    </nav>
+
+    <!-- View 1: Educational Philosophy (Default Public View for Parents & Visitors) -->
+    <section id="view-edu-panel" class="view-panel active">
+      <div class="edu-card">
+        <div class="edu-card-title">
+          <span>🌱</span>
+          <span>蒙特梭利环境创设理念</span>
+        </div>
+        <p class="edu-intro-text" id="edu-intro-text">
+          正在加载空间教育理念与创设背景...
+        </p>
+      </div>
+
+      <div class="edu-card">
+        <div class="edu-card-title">
+          <span>🎯</span>
+          <span>空间功能与儿童能力发展</span>
+        </div>
+        <div id="edu-principles-list">
+          <!-- Dynamic principles list -->
+        </div>
+      </div>
+
+      <div class="edu-card" id="edu-photo-wrap">
+        <div class="edu-card-title">
+          <span>📸</span>
+          <span>实景环境与空间美学</span>
+        </div>
+        <div class="edu-photo-wrap">
+          <img id="edu-photo-img" src="" alt="实景环境" class="edu-photo" />
+        </div>
+      </div>
+
+      <div class="edu-card" style="background: #faf8f5; border-color: #ddd4c4;">
+        <div class="edu-card-title" style="color: #654096;">
+          <span>🛡️</span>
+          <span>每日环境高标准巡检承诺</span>
+        </div>
+        <p style="font-size: 13px; color: #555; line-height: 1.6;">
+          园区严格执行每日开园前、午间、闭园后多轮环境巡检与消毒维护。负责老师通过扫码严格对照安全、卫生、物品归位等标准逐项核验，守护每一个孩子的健康成长。
+        </p>
+      </div>
+
+      <!-- Quick Teacher Unlock Button for Parents page bottom -->
+      <div id="parent-view-footer-unlock" style="text-align: center; margin: 20px 0 10px;">
+        <button type="button" onclick="openTeacherAuthModal()" style="background: #ffffff; border: 1px dashed var(--primary); color: var(--primary); padding: 9px 18px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.03);">
+          <span>🔐 负责老师打卡入口</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- View 2: Teacher Patrol & Check-in Form (Unlocked for Staff) -->
+    <section id="view-patrol-panel" class="view-panel">
+      <div class="form-card">
+        
+        <!-- Form Header -->
+        <div class="form-header-row">
+          <div class="form-section-title">
+            <span>📝</span>
+            <span>巡检标准核验</span>
+          </div>
+          <button type="button" class="quick-select-all-btn" onclick="selectAllCheckItems()">
+            <span>⚡</span>
+            <span>一键全部合格</span>
+          </button>
+        </div>
+
+        <!-- Staff & Type Selector -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label">负责老师</label>
+            <select id="staff-select" class="form-select">
+              <!-- Dynamic Staff Options -->
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label">巡检类型</label>
+            <select id="patrol-type-select" class="form-select">
+              <option value="每日巡检">每日巡检</option>
+              <option value="每周巡检">每周巡检</option>
+              <option value="专项安全排查">专项安全排查</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Check Items List -->
+        <div class="form-group" style="margin-top: 14px;">
+          <label class="form-label">执行标准项（点击确认）</label>
+          <div class="checklist" id="patrol-checklist">
+            <!-- Dynamic checklist items -->
+          </div>
+        </div>
+
+        <!-- Photo Upload -->
+        <div class="form-group">
+          <label class="form-label">现场拍照 / 上传图片 (可选)</label>
+          <label for="photo-input" class="photo-uploader-box">
+            <div style="font-size: 24px; margin-bottom: 4px;">📷</div>
+            <div style="font-size: 13px; font-weight: 600; color: #444;">点击拍摄或从相册选择</div>
+            <div style="font-size: 11px; color: #888;">支持一键上传环境与器材现场照片</div>
+            <input type="file" id="photo-input" accept="image/*" capture="environment" multiple style="display: none;">
+          </label>
+          <div class="photo-previews" id="photo-previews"></div>
+        </div>
+
+        <!-- Dimension Ratings -->
+        <div class="form-group">
+          <label class="form-label">四维执行评分 (默认满星)</label>
+          <div class="ratings-grid">
+            <div class="rating-box">
+              <div class="rating-label">🛡️ 安全维度</div>
+              <div class="stars-row" id="stars-safety"></div>
+            </div>
+            <div class="rating-box">
+              <div class="rating-label">🧹 环境卫生</div>
+              <div class="stars-row" id="stars-hygiene"></div>
+            </div>
+            <div class="rating-box">
+              <div class="rating-label">📦 设备物资</div>
+              <div class="stars-row" id="stars-supplies"></div>
+            </div>
+            <div class="rating-box">
+              <div class="rating-label">🌟 家园体验</div>
+              <div class="stars-row" id="stars-experience"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Remarks -->
+        <div class="form-group">
+          <label class="form-label">巡检备注 (可选)</label>
+          <textarea id="patrol-remarks" class="form-textarea" rows="2" placeholder="输入特殊情况、需维修事项或补充说明..."></textarea>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="button" id="submit-patrol-btn" class="submit-btn">
+          <span>✅</span>
+          <span>确认并提交巡检记录</span>
+        </button>
+
+        <!-- Exit Teacher Mode Button -->
+        <div style="text-align: center; margin-top: 10px;">
+          <button type="button" onclick="logoutTeacherMode()" style="background: none; border: none; font-size: 12px; color: #999; text-decoration: underline; cursor: pointer;">
+            退出教师打卡身份 · 返回家长浏览视角
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Footer with Print link -->
+    <footer style="text-align: center; padding: 20px 0 40px; color: #8c8273; font-size: 12px;">
+      <div style="margin-bottom: 8px;">
+        <a href="/print" style="color: var(--primary); text-decoration: none; font-weight: 700;">
+          🖨️ 打开全园区二维码标牌打印中心 (喜茶风排版)
+        </a>
+      </div>
+      <div>DADDY HOME 蒙特梭利托育中心 · 数字化环境管理系统</div>
+      <div style="font-size: 11px; margin-top: 2px;">数据实时直连钉钉 AI 多维表格</div>
+    </footer>
+
+  </main>
+
+  <!-- Teacher Passcode Modal -->
+  <div id="teacher-auth-modal" class="modal-overlay">
+    <div class="modal-dialog" style="max-width: 340px; padding: 24px; text-align: center;">
+      <div style="font-size: 36px; margin-bottom: 8px;">👩‍🏫</div>
+      <h3 style="font-size: 16px; font-weight: 800; color: var(--primary); margin-bottom: 6px;">负责老师身份验证</h3>
+      <p style="font-size: 12px; color: #666; margin-bottom: 16px; line-height: 1.5;">
+        请输入园区教师口令以解锁巡检打卡。<br><span style="color: #999;">(验证后本设备自动保持登录状态)</span>
+      </p>
+      <div style="margin-bottom: 16px;">
+        <input type="password" id="teacher-passcode-input" class="form-input" placeholder="输入4位教师口令 (默认2026)" style="text-align: center; font-size: 16px; letter-spacing: 2px; font-weight: bold;" maxlength="8" />
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <button type="button" class="toolbar-btn secondary" style="flex: 1; justify-content: center;" onclick="closeTeacherAuthModal()">取消</button>
+        <button type="button" class="toolbar-btn" style="flex: 1; justify-content: center;" onclick="verifyTeacherPasscode()">确认解锁</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Area Switcher Modal -->
+  <div id="area-selector-modal" class="modal-overlay">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title">选择园区空间</div>
+        <button id="modal-close-btn" class="modal-close" type="button">×</button>
+      </div>
+      <div class="modal-body" id="modal-areas-list">
+        <!-- Dynamic Areas List -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Modal -->
+  <div id="success-modal" class="modal-overlay">
+    <div class="modal-dialog" style="max-width: 360px; text-align: center; padding: 24px;">
+      <div style="font-size: 44px; margin-bottom: 8px;">🎉</div>
+      <h3 style="font-size: 17px; font-weight: 800; color: #065f46; margin-bottom: 8px;">巡检打卡已成功写入！</h3>
+      <p style="font-size: 13px; color: #444; margin-bottom: 14px;">
+        系统已自动在钉钉 AI 表格【<strong id="success-area-name">园所大厅</strong>】中增加一条合规巡检记录。
+      </p>
+      <div style="background: #faf8f5; border: 1px solid #e0d8ca; border-radius: 8px; padding: 10px; font-size: 12px; color: #555; margin-bottom: 18px; text-align: left;">
+        <div>🕒 打卡时间: <span id="success-time" style="color: #222; font-weight: 600;"></span></div>
+        <div>👤 负责老师: <span id="success-user" style="color: #222; font-weight: 600;"></span></div>
+        <div>🆔 钉钉记录ID: <span id="success-record-id" style="font-family: var(--font-mono); color: #654096;"></span></div>
+      </div>
+      <button type="button" class="submit-btn" style="margin-bottom: 0;" onclick="closeSuccessModal()">
+        完成并返回
+      </button>
+    </div>
+  </div>
+
+  <script src="/qrcode.min.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>

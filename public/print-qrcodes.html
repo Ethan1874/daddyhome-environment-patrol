@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DADDY HOME 园区环境二维码标牌与空间手帐卡 (喜茶风排版)</title>
+  <link rel="stylesheet" href="/style.css">
+  <style>
+    body {
+      background: #f1ede4;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .print-toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(251, 249, 245, 0.95);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--paper-border);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .toolbar-btn {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+
+    .toolbar-btn:hover {
+      background: var(--primary-hover);
+    }
+
+    .toolbar-btn.secondary {
+      background: #ffffff;
+      color: var(--text-main);
+      border: 1px solid var(--paper-border);
+    }
+
+    .toolbar-btn.secondary:hover {
+      background: #fdfbf7;
+    }
+
+    .print-canvas-wrap {
+      max-width: 1020px;
+      margin: 24px auto;
+      padding: 0 16px 40px;
+    }
+
+    .print-page-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+
+    /* Print Badge Card */
+    .qr-badge-card {
+      background: var(--paper-bg);
+      border: 1.5px dashed #c8bfb0;
+      border-radius: 16px;
+      padding: 26px 22px 20px;
+      text-align: center;
+      position: relative;
+      box-shadow: var(--shadow-paper);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 480px;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    @media print {
+      body {
+        background: #ffffff !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .print-canvas-wrap {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      .print-page-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10mm !important;
+        padding: 6mm !important;
+      }
+      .qr-badge-card {
+        box-shadow: none !important;
+        border: 1.5px dashed #999999 !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        min-height: 135mm !important;
+        background: #ffffff !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Controls Toolbar -->
+  <div class="print-toolbar no-print">
+    <div class="toolbar-left">
+      <a href="/" class="brand-badge">
+        <div class="brand-logo-icon">M</div>
+        <div class="brand-titles">
+          <span class="brand-main-title">DADDY HOME</span>
+          <span class="brand-sub-title">空间标本卡 & 二维码标牌 (单码双流转)</span>
+        </div>
+      </a>
+    </div>
+    <div style="display: flex; gap: 8px;">
+      <a href="/" class="toolbar-btn secondary">
+        <span>📱 返回移动端首页</span>
+      </a>
+      <button class="toolbar-btn" onclick="window.print()">
+        <span>🖨️ 一键打印所有标牌 (A4纸排版)</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Badges Canvas -->
+  <div class="print-canvas-wrap">
+    <div class="print-page-grid" id="badges-grid">
+      <!-- Dynamic QR Badges rendered via JavaScript -->
+    </div>
+  </div>
+
+  <script src="/qrcode.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async function() {
+      try {
+        const res = await fetch('/api/config');
+        const config = await res.json();
+        renderBadges(config.areas || []);
+      } catch (e) {
+        console.error(e);
+      }
+    });
+
+    function renderBadges(areas) {
+      const grid = document.getElementById('badges-grid');
+      const origin = window.location.origin;
+
+      grid.innerHTML = areas.map(function(area, idx) {
+        const tagsHtml = (area.tags || []).map(function(t) {
+          return '<span class="badge-tag-pill">[ ' + t + ' ]</span>';
+        }).join('');
+
+        const noteText = area.handwrittenNote || '「让孩子在真实环境中建构独立与专注」';
+        const doodleIcon = area.doodle || area.icon || '🏫';
+        const serialNo = 'ZONE · 0' + (idx + 1);
+
+        return '<div class="qr-badge-card" id="card-' + area.id + '">' +
+          '<!-- Top Washi Tape -->' +
+          '<div class="washi-tape-top"></div>' +
+
+          '<!-- Top Bar -->' +
+          '<div class="badge-top-bar" style="width: 100%;">' +
+            '<span class="badge-campus-tag">DADDY HOME MONTESSORI</span>' +
+            '<span class="badge-serial">' + serialNo + '</span>' +
+          '</div>' +
+
+          '<!-- Space Main Title & Doodle Icon -->' +
+          '<div class="badge-main-header" style="width: 100%;">' +
+            '<div class="badge-title-group" style="text-align: left;">' +
+              '<div class="badge-title-cn">' + area.name + '</div>' +
+              '<div class="badge-title-en">' + area.enName + ' · ' + area.shortCode + '</div>' +
+            '</div>' +
+            '<div class="badge-doodle-icon">' + doodleIcon + '</div>' +
+          '</div>' +
+
+          '<!-- Handwritten Observation Tagline -->' +
+          '<div class="badge-handwritten-quote" style="width: 100%; text-align: left;">' +
+            noteText +
+          '</div>' +
+
+          '<!-- Functional Tags -->' +
+          '<div class="badge-tags-strip" style="width: 100%; justify-content: flex-start;">' +
+            tagsHtml +
+          '</div>' +
+
+          '<!-- QR Code Specimen Frame -->' +
+          '<div class="badge-qr-section">' +
+            '<div class="badge-qr-frame">' +
+              '<div id="qrcode-' + area.id + '"></div>' +
+            '</div>' +
+          '</div>' +
+
+          '<!-- Verified Ink Stamp Seal -->' +
+          '<div class="badge-stamp-seal">' +
+            'MONTESSORI<br>DAILY PATROL<br>VERIFIED ✓' +
+          '</div>' +
+
+          '<!-- Dual Scan Action Box -->' +
+          '<div class="badge-dual-action-box">' +
+            '<div class="badge-action-item">' +
+              '<strong>📱 钉钉扫码 (老师)</strong>' +
+              '免密识别身份 · 一键巡检打卡' +
+            '</div>' +
+            '<div class="badge-action-item">' +
+              '<strong>💬 微信扫码 (家长)</strong>' +
+              '空间设计理念 · 环境育人解读' +
+            '</div>' +
+          '</div>' +
+
+          '<!-- Archival Footer Code -->' +
+          '<div class="badge-footer-code" style="font-family: var(--font-mono); font-size: 9px; color: #a8a29e; margin-top: 8px;">' +
+            'ID: ' + area.sheetId + ' · CODE: ' + area.shortCode + ' · DINGTALK AI-TABLE' +
+          '</div>' +
+        '</div>';
+      }).join('');
+
+      setTimeout(function() {
+        areas.forEach(function(area) {
+          const container = document.getElementById('qrcode-' + area.id);
+          if (container) {
+            container.innerHTML = '';
+            const targetUrl = origin + '/?area=' + area.id;
+            new QRCode(container, {
+              text: targetUrl,
+              width: 145,
+              height: 145,
+              colorDark: "#232323",
+              colorLight: "#ffffff",
+              correctLevel: QRCode.CorrectLevel.H
+            });
+          }
+        });
+      }, 100);
+    }
+  </script>
+</body>
+</html>
