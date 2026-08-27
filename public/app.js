@@ -49,14 +49,27 @@ async function initApp() {
     }
     AppState.currentArea = matched;
 
+        const hostname = window.location.hostname || '';
+    const isInternalClubDomain = hostname.endsWith('daddyhome.club');
+    const isExternalLoveDomain = hostname.endsWith('daddyhome.love');
+
     // 1. If scanned in DingTalk App -> Trigger Teacher Auto-Login
     if (isDingTalkEnv) {
       await handleDingTalkAutoLogin();
+    } else if (isInternalClubDomain) {
+      // Internal domain (daddyhome.club) defaults to Teacher mode if token or url key
+      if (savedToken || urlParams.get('role') === 'teacher' || urlParams.get('key') === '2026') {
+        AppState.isTeacher = true;
+        AppState.currentTab = 'patrol';
+      } else {
+        AppState.isTeacher = false;
+        AppState.currentTab = 'edu';
+      }
     } else if (savedToken || urlParams.get('role') === 'teacher' || urlParams.get('key') === '2026') {
       AppState.isTeacher = true;
       AppState.currentTab = 'patrol';
     } else {
-      // 2. Scanned in WeChat or Standard Mobile Browser -> Parent Educational View
+      // 2. Scanned in WeChat, external browser, or daddyhome.love -> Parent Educational View
       AppState.isTeacher = false;
       AppState.currentTab = 'edu';
     }
