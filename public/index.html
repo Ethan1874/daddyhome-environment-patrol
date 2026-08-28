@@ -18,7 +18,7 @@
       </div>
     </a>
     <div class="header-actions">
-      <!-- Role Badge Indicator (when teacher verified) -->
+      <!-- Role Badge Indicator (when in teacher mode) -->
       <div id="teacher-role-badge" style="display: none; align-items: center; gap: 4px; background: var(--primary-light); color: var(--primary); font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 12px; border: 1px solid rgba(101,64,150,0.2);">
         <span>👩‍🏫 教师模式</span>
       </div>
@@ -66,7 +66,7 @@
       </div>
     </section>
 
-    <!-- Dual-Mode View Switcher Tabs (Visible when Teacher Mode is Unlocked) -->
+    <!-- Dual-Mode View Switcher Tabs (Visible ONLY in Teacher Mode) -->
     <nav class="view-tabs" id="teacher-view-tabs" style="display: none;">
       <button id="tab-edu-btn" class="tab-btn" type="button">
         <span>📖</span>
@@ -78,7 +78,7 @@
       </button>
     </nav>
 
-    <!-- View 1: Educational Philosophy (Default Public View for Parents & Visitors) -->
+    <!-- View 1: Educational Philosophy (Clean View for Parents & Visitors) -->
     <section id="view-edu-panel" class="view-panel active">
       <div class="edu-card">
         <div class="edu-card-title">
@@ -116,19 +116,12 @@
           <span>每日环境高标准巡检承诺</span>
         </div>
         <p style="font-size: 13px; color: #555; line-height: 1.6;">
-          园区严格执行每日开园前、午间、闭园后多轮环境巡检与消毒维护。负责老师通过扫码严格对照安全、卫生、物品归位等标准逐项核验，守护每一个孩子的健康成长。
+          园区严格执行每日开园前、午间、闭园后多轮环境巡检与消毒维护。负责老师通过钉钉扫码严格对照安全、卫生、物品归位等标准逐项核验，守护每一个孩子的健康成长。
         </p>
-      </div>
-
-      <!-- Quick Teacher Unlock Button for Parents page bottom -->
-      <div id="parent-view-footer-unlock" style="text-align: center; margin: 20px 0 10px;">
-        <button type="button" onclick="openTeacherAuthModal()" style="background: #ffffff; border: 1px dashed var(--primary); color: var(--primary); padding: 9px 18px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.03);">
-          <span>🔐 负责老师打卡入口</span>
-        </button>
       </div>
     </section>
 
-    <!-- View 2: Teacher Patrol & Check-in Form (Unlocked for Staff) -->
+    <!-- View 2: Teacher Patrol & Check-in Form (Teacher Flow) -->
     <section id="view-patrol-panel" class="view-panel">
       <div class="form-card">
         
@@ -217,17 +210,10 @@
           <span>确认并提交巡检记录</span>
         </button>
 
-        <!-- Exit Teacher Mode Button -->
-        <div style="text-align: center; margin-top: 10px;">
-          <button type="button" onclick="logoutTeacherMode()" style="background: none; border: none; font-size: 12px; color: #999; text-decoration: underline; cursor: pointer;">
-            退出教师打卡身份 · 返回家长浏览视角
-          </button>
-        </div>
-
       </div>
     </section>
 
-    <!-- Footer with Print link -->
+    <!-- Footer -->
     <footer style="text-align: center; padding: 20px 0 40px; color: #8c8273; font-size: 12px;">
       <div style="margin-bottom: 8px;">
         <a href="/print" style="color: var(--primary); text-decoration: none; font-weight: 700;">
@@ -239,24 +225,6 @@
     </footer>
 
   </main>
-
-  <!-- Teacher Passcode Modal -->
-  <div id="teacher-auth-modal" class="modal-overlay">
-    <div class="modal-dialog" style="max-width: 340px; padding: 24px; text-align: center;">
-      <div style="font-size: 36px; margin-bottom: 8px;">👩‍🏫</div>
-      <h3 style="font-size: 16px; font-weight: 800; color: var(--primary); margin-bottom: 6px;">负责老师身份验证</h3>
-      <p style="font-size: 12px; color: #666; margin-bottom: 16px; line-height: 1.5;">
-        请输入园区教师口令以解锁巡检打卡。<br><span style="color: #999;">(验证后本设备自动保持登录状态)</span>
-      </p>
-      <div style="margin-bottom: 16px;">
-        <input type="password" id="teacher-passcode-input" class="form-input" placeholder="输入4位教师口令 (默认2026)" style="text-align: center; font-size: 16px; letter-spacing: 2px; font-weight: bold;" maxlength="8" />
-      </div>
-      <div style="display: flex; gap: 8px;">
-        <button type="button" class="toolbar-btn secondary" style="flex: 1; justify-content: center;" onclick="closeTeacherAuthModal()">取消</button>
-        <button type="button" class="toolbar-btn" style="flex: 1; justify-content: center;" onclick="verifyTeacherPasscode()">确认解锁</button>
-      </div>
-    </div>
-  </div>
 
   <!-- Area Switcher Modal -->
   <div id="area-selector-modal" class="modal-overlay">

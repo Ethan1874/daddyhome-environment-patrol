@@ -224,23 +224,6 @@ class PatrolRequestHandler(SimpleHTTPRequestHandler):
                 print(f"[Error] DingTalk auth failed: {e}", file=sys.stderr)
                 return self.send_json({"error": str(e)}, status=500)
 
-        if path == "/api/verify-teacher":
-            content_len = int(self.headers.get("Content-Length", 0))
-            raw_body = self.rfile.read(content_len).decode("utf-8")
-            try:
-                data = json.loads(raw_body)
-                code = str(data.get("passcode", "")).strip()
-                valid_code = str(get_current_passcode()).strip()
-                if code and (code == valid_code or code == "2026"):
-                    return self.send_json({
-                        "success": True,
-                        "token": "dh_teacher_" + uuid.uuid4().hex[:12],
-                        "message": "老师身份验证成功"
-                    })
-                return self.send_json({"error": "教师识别口令错误，请核对后重试"}, status=401)
-            except Exception as e:
-                return self.send_json({"error": str(e)}, status=500)
-
         if path == "/api/upload":
             content_len = int(self.headers.get("Content-Length", 0))
             raw_body = self.rfile.read(content_len).decode("utf-8")

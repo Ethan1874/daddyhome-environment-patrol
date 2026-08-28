@@ -1,12 +1,14 @@
 // DADDY HOME Environment Patrol & Education Web App
-// Smart Dual Flow: DingTalk App Scan (Teacher Auto-Login) vs WeChat/Browser (Parent Edu View)
+// Role Separation: 
+// - DingTalk Scan OR Internal Domain (*.daddyhome.club) -> Internal Teacher Patrol Mode (Auto-Login & Auto-Checkin)
+// - WeChat Scan OR External Domain (*.daddyhome.love) -> Pure Parent Educational Rationale (No Passwords / No Clutter)
 
 let AppState = {
   config: null,
   currentArea: null,
   isTeacher: false,
   currentTeacher: null,
-  currentTab: 'edu', // 'edu' | 'patrol'
+  currentTab: 'edu',
   selectedItems: new Set(),
   uploadedPhotos: [],
   ratings: { safety: 5, hygiene: 5, supplies: 5, experience: 5 }
@@ -23,21 +25,15 @@ async function initApp() {
 
     const ua = navigator.userAgent || '';
     const isDingTalkEnv = /DingTalk/i.test(ua);
-    const isWeChatEnv = /MicroMessenger/i.test(ua);
-
-    console.log('[Environment Detect]', { isDingTalk: isDingTalkEnv, isWeChat: isWeChatEnv });
-
-    // Check if device already has verified teacher token
-    const savedToken = localStorage.getItem('daddyhome_teacher_token');
-    const savedTeacherInfo = localStorage.getItem('daddyhome_teacher_user');
-    if (savedTeacherInfo) {
-      try { AppState.currentTeacher = JSON.parse(savedTeacherInfo); } catch(e){}
-    }
+    const hostname = window.location.hostname || '';
+    const isInternalDomain = hostname.includes('daddyhome.club');
+    const isExternalDomain = hostname.includes('daddyhome.love');
 
     const urlParams = new URLSearchParams(window.location.search);
     const targetAreaId = urlParams.get('area') || urlParams.get('sheet') || urlParams.get('id');
-    
-    // Resolve area
+    const explicitRole = urlParams.get('role');
+
+    // Match Area
     let matched = null;
     if (targetAreaId) {
       matched = AppState.config.areas.find(function(a) {
@@ -49,27 +45,20 @@ async function initApp() {
     }
     AppState.currentArea = matched;
 
-        const hostname = window.location.hostname || '';
-    const isInternalClubDomain = hostname.endsWith('daddyhome.club');
-    const isExternalLoveDomain = hostname.endsWith('daddyhome.love');
-
-    // 1. If scanned in DingTalk App -> Trigger Teacher Auto-Login
+    // Role Routing:
+    // 1. If scanned in DingTalk App -> Teacher Mode with Auto-Login
     if (isDingTalkEnv) {
-      await handleDingTalkAutoLogin();
-    } else if (isInternalClubDomain) {
-      // Internal domain (daddyhome.club) defaults to Teacher mode if token or url key
-      if (savedToken || urlParams.get('role') === 'teacher' || urlParams.get('key') === '2026') {
-        AppState.isTeacher = true;
-        AppState.currentTab = 'patrol';
-      } else {
-        AppState.isTeacher = false;
-        AppState.currentTab = 'edu';
-      }
-    } else if (savedToken || urlParams.get('role') === 'teacher' || urlParams.get('key') === '2026') {
       AppState.isTeacher = true;
       AppState.currentTab = 'patrol';
-    } else {
-      // 2. Scanned in WeChat, external browser, or daddyhome.love -> Parent Educational View
+      await handleDingTalkAutoLogin();
+    } 
+    // 2. If accessed via Internal Domain (*.daddyhome.club) or ?role=teacher -> Teacher Mode
+    else if (isInternalDomain || explicitRole === 'teacher') {
+      AppState.isTeacher = true;
+      AppState.currentTab = 'patrol';
+    } 
+    // 3. If accessed via WeChat, External Domain (*.daddyhome.love), or standard browser -> Pure Parent View
+    else {
       AppState.isTeacher = false;
       AppState.currentTab = 'edu';
     }
@@ -83,10 +72,6 @@ async function initApp() {
 }
 
 async function handleDingTalkAutoLogin() {
-  AppState.isTeacher = true;
-  AppState.currentTab = 'patrol';
-
-  // If DingTalk JSAPI is available
   if (window.dd && window.dd.runtime && window.dd.runtime.permission) {
     try {
       window.dd.ready(function() {
@@ -102,8 +87,6 @@ async function handleDingTalkAutoLogin() {
             const data = await res.json();
             if (data.success && data.user) {
               AppState.currentTeacher = data.user;
-              localStorage.setItem('daddyhome_teacher_user', JSON.stringify(data.user));
-              localStorage.setItem('daddyhome_teacher_token', data.token);
               renderPatrolForm(AppState.currentArea);
               showToast('👩‍🏫 钉钉免登已识别：' + data.user.name + ' 老师');
             }
@@ -116,10 +99,6 @@ async function handleDingTalkAutoLogin() {
     } catch(e) {
       console.log('[DingTalk JSAPI Error]', e);
     }
-  } else {
-    // If opened in DingTalk webview without JSAPI, still auto-enable teacher mode
-    AppState.isTeacher = true;
-    AppState.currentTab = 'patrol';
   }
 }
 
@@ -147,7 +126,6 @@ function renderApp() {
   const teacherTabs = document.getElementById('teacher-view-tabs');
   const teacherBadge = document.getElementById('teacher-role-badge');
   const headerSubtitle = document.getElementById('header-role-subtitle');
-  const parentUnlockBtn = document.getElementById('parent-view-footer-unlock');
 
   if (AppState.isTeacher) {
     teacherTabs.style.display = 'flex';
@@ -156,12 +134,10 @@ function renderApp() {
       teacherBadge.innerHTML = '<span>👩‍🏫 ' + AppState.currentTeacher.name + ' 老师</span>';
     }
     headerSubtitle.textContent = '钉钉巡检工作台 · 自动同步';
-    parentUnlockBtn.style.display = 'none';
   } else {
     teacherTabs.style.display = 'none';
     teacherBadge.style.display = 'none';
     headerSubtitle.textContent = '空间教育解读 · 蒙氏环境';
-    parentUnlockBtn.style.display = 'block';
   }
 
   renderEducationView(area);
@@ -199,7 +175,6 @@ function renderPatrolForm(area) {
     return '<option value="' + s.userid + '" data-name="' + s.name + '">' + s.name + ' (' + (s.title || '教师') + ')</option>';
   }).join('');
 
-  // If current teacher is identified via DingTalk, select them!
   if (AppState.currentTeacher && AppState.currentTeacher.userid) {
     staffSelect.value = AppState.currentTeacher.userid;
   } else {
@@ -415,60 +390,6 @@ function switchTab(tab) {
   }
 }
 
-function openTeacherAuthModal() {
-  document.getElementById('teacher-passcode-input').value = '';
-  document.getElementById('teacher-auth-modal').classList.add('active');
-  setTimeout(function() {
-    document.getElementById('teacher-passcode-input').focus();
-  }, 100);
-}
-
-function closeTeacherAuthModal() {
-  document.getElementById('teacher-auth-modal').classList.remove('active');
-}
-
-async function verifyTeacherPasscode() {
-  const passcode = document.getElementById('teacher-passcode-input').value.trim();
-  if (!passcode) {
-    alert('请输入教师口令');
-    return;
-  }
-
-  try {
-    const res = await fetch('/api/verify-teacher', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ passcode: passcode })
-    });
-
-    const data = await res.json();
-    if (data.success) {
-      localStorage.setItem('daddyhome_teacher_token', data.token);
-      AppState.isTeacher = true;
-      closeTeacherAuthModal();
-      AppState.currentTab = 'patrol';
-      renderApp();
-      showToast('🎉 教师身份验证通过，已开启巡检工作台！');
-    } else {
-      alert(data.error || '口令错误，请重试');
-    }
-  } catch (e) {
-    alert('网络异常，验证失败');
-  }
-}
-
-function logoutTeacherMode() {
-  if (confirm('确认退出教师模式？退出后将仅展示家长浏览视窗。')) {
-    localStorage.removeItem('daddyhome_teacher_token');
-    localStorage.removeItem('daddyhome_teacher_user');
-    AppState.isTeacher = false;
-    AppState.currentTeacher = null;
-    AppState.currentTab = 'edu';
-    renderApp();
-    showToast('已切换为家长浏览视角');
-  }
-}
-
 function openAreaSelector() {
   const modal = document.getElementById('area-selector-modal');
   const list = document.getElementById('modal-areas-list');
@@ -507,11 +428,6 @@ function setupEventListeners() {
   document.getElementById('modal-close-btn').addEventListener('click', closeAreaSelector);
   document.getElementById('photo-input').addEventListener('change', handlePhotoCapture);
   document.getElementById('submit-patrol-btn').addEventListener('click', submitPatrol);
-  document.getElementById('teacher-passcode-input').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') {
-      verifyTeacherPasscode();
-    }
-  });
 }
 
 function showToast(msg) {
