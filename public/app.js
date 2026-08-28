@@ -1,8 +1,9 @@
 // DADDY HOME Campus Environment Patrol & Space Education
-// DingTalk Long-Lived Teacher Auth (90 Days Persistence) & Direct Identity Record
+// DingTalk Official OAuth2 + JSAPI Auth Flow & 90-day Long Session
 
 const SESSION_STORAGE_KEY = 'dh_patrol_teacher_session_v2';
 const DEFAULT_EXPIRY_DAYS = 90;
+const DINGTALK_CLIENT_ID = 'dingh5hmtyjgs4klkcdu';
 
 let AppState = {
   config: null,
@@ -30,6 +31,7 @@ async function initApp() {
 
     const urlParams = new URLSearchParams(window.location.search);
     const explicitRole = urlParams.get('role');
+    const authCode = urlParams.get('authCode') || urlParams.get('code');
 
     // 1. Resolve Target Area from Sub-route Path or Query (e.g. /life-farm, /woodworking, etc.)
     const pathname = window.location.pathname.replace(/^\/+|\/+$/g, '');
@@ -57,7 +59,20 @@ async function initApp() {
     // 2. Check Saved Long-Lived Teacher Session
     const savedSession = loadTeacherSession();
 
-    // 3. Role Decision:
+    // 3. Handle OAuth Code if redirected from DingTalk Auth
+    if (authCode) {
+      const loginSuccess = await exchangeDingTalkCode(authCode);
+      if (loginSuccess) {
+        // Clean URL
+        const cleanUrl = new URL(window.location);
+        cleanUrl.searchParams.delete('code');
+        cleanUrl.searchParams.delete('authCode');
+        cleanUrl.searchParams.delete('state');
+        window.history.replaceState({}, '', cleanUrl.pathname + (cleanUrl.search ? cleanUrl.search : ''));
+      }
+    }
+
+    // 4. Role & Auth Decision
     if (isDingTalkEnv || isInternalDomain || explicitRole === 'teacher' || savedSession) {
       AppState.isTeacher = true;
       document.body.classList.add('teacher-mode-body');
@@ -68,11 +83,17 @@ async function initApp() {
         AppState.currentTeacher = savedSession.user;
       }
 
-      // If in DingTalk App, trigger silent auto-login to refresh / verify identity
-      if (isDingTalkEnv) {
-        await handleDingTalkAutoLogin();
+      // If in DingTalk App and no saved session -> trigger DingTalk OAuth / JSAPI
+      if (isDingTalkEnv && !AppState.currentTeacher) {
+        // Try JSAPI silent auth first
+        const silentOk = await handleDingTalkAutoLogin();
+        if (!silentOk) {
+          // If silent JSAPI didn't resolve, show the OAuth login prompt card
+          showDingTalkLoginPrompt();
+          return;
+        }
       } else if (!AppState.currentTeacher && AppState.config.staff && AppState.config.staff.length > 0) {
-        // Fallback default teacher
+        // Fallback default teacher for direct browser test
         AppState.currentTeacher = AppState.config.staff[0];
         saveTeacherSession(AppState.currentTeacher, DEFAULT_EXPIRY_DAYS);
       }
@@ -80,7 +101,7 @@ async function initApp() {
       renderTeacherWorkspace();
       setupEventListeners();
     } else {
-      // PURE PARENT VIEW: strictly 7 images
+      // PURE PARENT VIEW: strictly 8 images
       AppState.isTeacher = false;
       document.body.classList.remove('teacher-mode-body');
       document.getElementById('parent-pure-image-flow').style.display = 'flex';
@@ -90,6 +111,47 @@ async function initApp() {
     }
   } catch (err) {
     console.error('Init error:', err);
+  }
+}
+
+// -------------------------------------------------------------
+// DingTalk Code Exchange
+// -------------------------------------------------------------
+async function exchangeDingTalkCode(code) {
+  try {
+    showToast('⏳ 正在进行钉钉身份免登验证...');
+    const res = await fetch('/api/dingtalk-login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ authCode: code })
+    });
+    const data = await res.json();
+    if (data.success && data.user) {
+      AppState.currentTeacher = data.user;
+      saveTeacherSession(data.user, DEFAULT_EXPIRY_DAYS);
+      showToast('👩‍🏫 钉钉免登已识别：' + data.user.name + ' 老师 (90天有效)');
+      return true;
+    }
+  } catch(e) {
+    console.error('Code exchange failed:', e);
+  }
+  return false;
+}
+
+// -------------------------------------------------------------
+// Trigger DingTalk Official OAuth2 Login
+// -------------------------------------------------------------
+function triggerDingTalkOAuth() {
+  const currentUrl = window.location.origin + window.location.pathname;
+  const redirectUri = encodeURIComponent(currentUrl);
+  const oauthUrl = 'https://login.dingtalk.com/oauth2/auth?client_id=' + DINGTALK_CLIENT_ID + '&response_type=code&scope=openid%20corpid&state=patrol&redirect_uri=' + redirectUri + '&prompt=consent';
+  window.location.href = oauthUrl;
+}
+
+function showDingTalkLoginPrompt() {
+  const modal = document.getElementById('login-prompt-modal');
+  if (modal) {
+    modal.classList.add('active');
   }
 }
 
@@ -123,35 +185,30 @@ function loadTeacherSession() {
 // -------------------------------------------------------------
 // DingTalk JSAPI Silent Auth
 // -------------------------------------------------------------
-async function handleDingTalkAutoLogin() {
-  if (window.dd && window.dd.runtime && window.dd.runtime.permission) {
-    try {
-      window.dd.ready(function() {
-        window.dd.runtime.permission.requestAuthCode({
-          corpId: AppState.config.corpId || 'dingfdcd647054eb40beee0f45d8e4f7c288',
-          onSuccess: async function(result) {
-            const res = await fetch('/api/dingtalk-login', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ authCode: result.code })
-            });
-            const data = await res.json();
-            if (data.success && data.user) {
-              AppState.currentTeacher = data.user;
-              saveTeacherSession(data.user, DEFAULT_EXPIRY_DAYS);
-              updateTeacherCard();
-              showToast('👩‍🏫 钉钉免登已识别：' + data.user.name + ' 老师');
+function handleDingTalkAutoLogin() {
+  return new Promise(function(resolve) {
+    if (window.dd && window.dd.runtime && window.dd.runtime.permission) {
+      try {
+        window.dd.ready(function() {
+          window.dd.runtime.permission.requestAuthCode({
+            corpId: AppState.config.corpId || 'dingfdcd647054eb40beee0f45d8e4f7c288',
+            onSuccess: async function(result) {
+              const ok = await exchangeDingTalkCode(result.code);
+              resolve(ok);
+            },
+            onFail: function(err) {
+              console.log('[DingTalk JSAPI Code Fail]', err);
+              resolve(false);
             }
-          },
-          onFail: function(err) {
-            console.log('[DingTalk JSAPI Code Fail]', err);
-          }
+          });
         });
-      });
-    } catch(e) {
-      console.log('[DingTalk JSAPI Error]', e);
+      } catch(e) {
+        resolve(false);
+      }
+    } else {
+      resolve(false);
     }
-  }
+  });
 }
 
 function renderTeacherWorkspace() {
@@ -351,7 +408,7 @@ async function submitPatrol() {
 function showSuccessModal(data, teacher) {
   const modal = document.getElementById('success-modal');
   document.getElementById('success-time').textContent = data.timestamp;
-  document.getElementById('success-user').textContent = (data.userName || teacher.name) + ' 老师 (ID: ' + (teacher.userid || '') + ')';
+  document.getElementById('success-user').textContent = (data.userName || teacher.name) + ' 老师';
   document.getElementById('success-record-id').textContent = data.recordId;
   document.getElementById('success-area-name').textContent = data.areaName;
   modal.classList.add('active');

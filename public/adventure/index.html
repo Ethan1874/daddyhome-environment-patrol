@@ -764,5 +764,26 @@ body {
   </div>
 
   <script src="/app.js?v=20260828_1549"></script>
+
+  <!-- DingTalk Login Prompt Modal -->
+  <div id="login-prompt-modal" class="modal-overlay">
+    <div class="modal-dialog" style="max-width: 360px;">
+      <div style="font-size: 40px; margin-bottom: 8px;">🔐</div>
+      <h3 style="font-size: 17px; font-weight: 800; color: #1a1a1a; margin-bottom: 6px;">
+        钉钉巡检教师身份认证
+      </h3>
+      <p style="font-size: 12px; color: #666; margin-bottom: 18px; line-height: 1.5;">
+        请授权您的钉钉身份，打卡记录将直接以您的姓名写入钉钉 AI 表格（90天超长免登）。
+      </p>
+      <button type="button" class="patrol-submit-btn" style="background: #007fff; margin-bottom: 10px;" onclick="triggerDingTalkOAuth()">
+        <span>🔵</span>
+        <span>钉钉一键授权免登</span>
+      </button>
+      <button type="button" class="switch-teacher-btn" style="width: 100%; padding: 10px;" onclick="openSwitchTeacherModal()">
+        👩‍🏫 从花名册选择我的教师身份
+      </button>
+    </div>
+  </div>
+
 </body>
 </html>
