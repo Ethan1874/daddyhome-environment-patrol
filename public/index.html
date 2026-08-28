@@ -3,95 +3,42 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>DADDY HOME 空间教育解读与环境巡检系统 - 生命场</title>
+  <title>DADDY HOME 生命场 - 空间教育解读</title>
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 
-  <!-- Top Navigation Header -->
-  <header class="app-header">
-    <a href="/" class="brand-badge">
-      <div class="brand-logo-icon">M</div>
-      <div class="brand-titles">
-        <span class="brand-main-title">DADDY HOME</span>
-        <span class="brand-sub-title" id="header-role-subtitle">空间教育解读 · 蒙氏环境</span>
-      </div>
-    </a>
-    <div class="header-actions">
-      <!-- Role Badge Indicator (when in teacher mode) -->
-      <div id="teacher-role-badge" style="display: none; align-items: center; gap: 4px; background: var(--primary-light); color: var(--primary); font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 12px; border: 1px solid rgba(101,64,150,0.2);">
-        <span>👩‍🏫 教师模式</span>
-      </div>
+  <!-- VIEW A: PURE 4-IMAGE LONG FLOW (PARENT VIEW - ONLY 4 IMAGES, NOTHING ELSE) -->
+  <main id="parent-pure-image-flow">
+    <img src="/assets/parent_details/1.jpg" alt="DADDY HOME 生命场教育解读 1" class="parent-pure-img" loading="eager" />
+    <img src="/assets/parent_details/2.jpg" alt="DADDY HOME 生命场教育解读 2" class="parent-pure-img" loading="lazy" />
+    <img src="/assets/parent_details/3.jpg" alt="DADDY HOME 生命场教育解读 3" class="parent-pure-img" loading="lazy" />
+    <img src="/assets/parent_details/4.jpg" alt="DADDY HOME 生命场教育解读 4" class="parent-pure-img" loading="lazy" />
+  </main>
 
-      <button id="area-switch-btn" class="area-switch-btn" type="button">
-        <span id="current-area-btn-text">生命场（西院）</span>
-        <span>▾</span>
-      </button>
-    </div>
-  </header>
-
-  <!-- Main Container -->
-  <main class="app-container">
-
-    <!-- Heytea-Style Hero Specimen Card -->
-    <section class="heytea-badge-container" id="hero-badge-card">
-      <div class="washi-tape-top"></div>
-      
-      <div class="badge-top-bar">
-        <span class="badge-campus-tag">MONTESSORI PREPARED ENVIRONMENT</span>
-        <span class="badge-serial" id="hero-serial">ZONE · 01</span>
-      </div>
-
-      <div class="badge-main-header">
-        <div class="badge-title-group">
-          <h1 class="badge-title-cn" id="hero-title-cn">生命场（西院）</h1>
-          <div class="badge-title-en" id="hero-title-en">LIFE FARM · COURT-W-LF</div>
+  <!-- VIEW B: TEACHER PATROL WORKSPACE (SHOWN ONLY IN DINGTALK / INTERNAL DOMAIN) -->
+  <div id="teacher-workspace" style="display: none;">
+    
+    <header class="app-header">
+      <div class="brand-badge">
+        <div class="brand-logo-icon">M</div>
+        <div class="brand-titles">
+          <span class="brand-main-title">DADDY HOME</span>
+          <span class="brand-sub-title">钉钉巡检工作台 · 生命场</span>
         </div>
-        <div class="badge-doodle-icon" id="hero-doodle">🐑</div>
       </div>
-
-      <div class="badge-handwritten-quote" id="hero-handwritten">
-        「双脚踩在泥土里，从被照顾者成长为生命的照料者」
+      <div id="teacher-name-badge" style="background: var(--primary-light); color: var(--primary); font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 12px;">
+        👩‍🏫 负责老师
       </div>
-      
-      <div class="badge-tags-strip" id="hero-tags">
-        <span class="badge-tag-pill">[ 生命 ]</span>
-        <span class="badge-tag-pill">[ 责任 ]</span>
-        <span class="badge-tag-pill">[ 观察 ]</span>
-      </div>
+    </header>
 
-      <div style="background: #ffffff; border: 1px solid var(--paper-border); border-radius: 8px; padding: 8px 12px; font-size: 12px; color: #15803d; font-weight: 600; display: flex; align-items: center; gap: 6px;">
-        <span style="font-size: 14px;">🛡️</span>
-        <span>今日环境已巡检 · 安全合规与动物照护守护中</span>
-      </div>
-    </section>
-
-    <!-- Dual-Mode View Switcher Tabs (Visible ONLY in Teacher Mode) -->
-    <nav class="view-tabs" id="teacher-view-tabs" style="display: none;">
-      <button id="tab-edu-btn" class="tab-btn" type="button">
-        <span>📖</span>
-        <span>空间教育解读 (家长视角)</span>
-      </button>
-      <button id="tab-patrol-btn" class="tab-btn active" type="button">
-        <span>📋</span>
-        <span>教师巡检打卡</span>
-      </button>
-    </nav>
-
-    <!-- View 1: Parent Educational Philosophy (Dynamic: Long Image Flow for 生命场 / Text Cards for others) -->
-    <section id="view-edu-panel" class="view-panel active">
-      <!-- Dynamically filled by renderEducationView -->
-    </section>
-
-    <!-- View 2: Teacher Patrol & Check-in Form (Teacher Flow) -->
-    <section id="view-patrol-panel" class="view-panel">
+    <main class="app-container">
       <div class="form-card">
         
-        <!-- Form Header -->
         <div class="form-header-row">
           <div class="form-section-title">
             <span>📝</span>
-            <span>巡检标准核验</span>
+            <span>生命场巡检标准核验</span>
           </div>
           <button type="button" class="quick-select-all-btn" onclick="selectAllCheckItems()">
             <span>⚡</span>
@@ -99,13 +46,10 @@
           </button>
         </div>
 
-        <!-- Staff & Type Selector -->
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
           <div class="form-group" style="margin-bottom: 0;">
             <label class="form-label">负责老师</label>
-            <select id="staff-select" class="form-select">
-              <!-- Dynamic Staff Options -->
-            </select>
+            <select id="staff-select" class="form-select"></select>
           </div>
           <div class="form-group" style="margin-bottom: 0;">
             <label class="form-label">巡检类型</label>
@@ -117,15 +61,11 @@
           </div>
         </div>
 
-        <!-- Check Items List -->
         <div class="form-group" style="margin-top: 14px;">
           <label class="form-label">执行标准项（点击确认）</label>
-          <div class="checklist" id="patrol-checklist">
-            <!-- Dynamic checklist items -->
-          </div>
+          <div class="checklist" id="patrol-checklist"></div>
         </div>
 
-        <!-- Photo Upload -->
         <div class="form-group">
           <label class="form-label">现场拍照 / 上传图片 (可选)</label>
           <label for="photo-input" class="photo-uploader-box">
@@ -137,7 +77,6 @@
           <div class="photo-previews" id="photo-previews"></div>
         </div>
 
-        <!-- Dimension Ratings -->
         <div class="form-group">
           <label class="form-label">四维执行评分 (默认满星)</label>
           <div class="ratings-grid">
@@ -160,45 +99,19 @@
           </div>
         </div>
 
-        <!-- Remarks -->
         <div class="form-group">
           <label class="form-label">巡检备注 (可选)</label>
           <textarea id="patrol-remarks" class="form-textarea" rows="2" placeholder="输入特殊情况、动物喂养状态或需补充说明..."></textarea>
         </div>
 
-        <!-- Submit Button -->
         <button type="button" id="submit-patrol-btn" class="submit-btn">
           <span>✅</span>
           <span>确认并提交巡检记录</span>
         </button>
 
       </div>
-    </section>
+    </main>
 
-    <!-- Footer -->
-    <footer style="text-align: center; padding: 20px 0 40px; color: #8c8273; font-size: 12px;">
-      <div style="margin-bottom: 8px;">
-        <a href="/print" style="color: var(--primary); text-decoration: none; font-weight: 700;">
-          🖨️ 打开生命场 & 全园区二维码标牌打印中心
-        </a>
-      </div>
-      <div>DADDY HOME 蒙特梭利托育中心 · 数字化环境管理系统</div>
-      <div style="font-size: 11px; margin-top: 2px;">生命场直连钉钉 AI 多维表格子表</div>
-    </footer>
-
-  </main>
-
-  <!-- Area Switcher Modal -->
-  <div id="area-selector-modal" class="modal-overlay">
-    <div class="modal-dialog">
-      <div class="modal-header">
-        <div class="modal-title">选择园区空间</div>
-        <button id="modal-close-btn" class="modal-close" type="button">×</button>
-      </div>
-      <div class="modal-body" id="modal-areas-list">
-        <!-- Dynamic Areas List -->
-      </div>
-    </div>
   </div>
 
   <!-- Success Modal -->
@@ -207,7 +120,7 @@
       <div style="font-size: 44px; margin-bottom: 8px;">🎉</div>
       <h3 style="font-size: 17px; font-weight: 800; color: #065f46; margin-bottom: 8px;">巡检打卡已成功写入！</h3>
       <p style="font-size: 13px; color: #444; margin-bottom: 14px;">
-        系统已自动在钉钉 AI 表格【<strong id="success-area-name">生命场</strong>】中增加一条合规巡检记录。
+        系统已自动在钉钉 AI 表格【<strong>生命场</strong>】中增加一条合规巡检记录。
       </p>
       <div style="background: #faf8f5; border: 1px solid #e0d8ca; border-radius: 8px; padding: 10px; font-size: 12px; color: #555; margin-bottom: 18px; text-align: left;">
         <div>🕒 打卡时间: <span id="success-time" style="color: #222; font-weight: 600;"></span></div>
@@ -215,12 +128,11 @@
         <div>🆔 钉钉记录ID: <span id="success-record-id" style="font-family: var(--font-mono); color: #654096;"></span></div>
       </div>
       <button type="button" class="submit-btn" style="margin-bottom: 0;" onclick="closeSuccessModal()">
-        完成并返回
+        完成
       </button>
     </div>
   </div>
 
-  <script src="/qrcode.min.js"></script>
   <script src="/app.js"></script>
 </body>
 </html>
