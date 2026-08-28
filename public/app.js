@@ -146,26 +146,26 @@ function renderApp() {
 }
 
 function renderEducationView(area) {
-  document.getElementById('edu-intro-text').textContent = area.educationIntro;
+  // Parent view now renders high-res seamless vertical long-image flow
+  const introEl = document.getElementById('edu-intro-text');
+  if (introEl) introEl.textContent = area.educationIntro;
 
   const principlesList = document.getElementById('edu-principles-list');
-  if (area.montessoriPrinciples && area.montessoriPrinciples.length > 0) {
+  if (principlesList && area.montessoriPrinciples) {
     principlesList.innerHTML = area.montessoriPrinciples.map(function(p) {
-      return '<div class="principle-item">' +
-        '<div class="principle-title">✨ ' + p.title + '</div>' +
-        '<div class="principle-desc">' + p.desc + '</div>' +
-      '</div>';
+      return '<div class="principle-item"><div class="principle-title">✨ ' + p.title + '</div><div class="principle-desc">' + p.desc + '</div></div>';
     }).join('');
-  } else {
-    principlesList.innerHTML = '';
   }
 
   const photoImg = document.getElementById('edu-photo-img');
-  if (area.image) {
-    photoImg.src = area.image;
-    document.getElementById('edu-photo-wrap').style.display = 'block';
-  } else {
-    document.getElementById('edu-photo-wrap').style.display = 'none';
+  const photoWrap = document.getElementById('edu-photo-wrap');
+  if (photoImg && photoWrap) {
+    if (area.image) {
+      photoImg.src = area.image;
+      photoWrap.style.display = 'block';
+    } else {
+      photoWrap.style.display = 'none';
+    }
   }
 }
 
