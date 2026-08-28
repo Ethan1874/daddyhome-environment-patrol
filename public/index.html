@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>DADDY HOME 空间教育解读与环境巡检系统</title>
+  <title>DADDY HOME 空间教育解读与环境巡检系统 - 生命场</title>
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
@@ -24,7 +24,7 @@
       </div>
 
       <button id="area-switch-btn" class="area-switch-btn" type="button">
-        <span id="current-area-btn-text">园所大厅</span>
+        <span id="current-area-btn-text">生命场（西院）</span>
         <span>▾</span>
       </button>
     </div>
@@ -44,25 +44,25 @@
 
       <div class="badge-main-header">
         <div class="badge-title-group">
-          <h1 class="badge-title-cn" id="hero-title-cn">园所大厅</h1>
-          <div class="badge-title-en" id="hero-title-en">Family Hub & Welcome Hall · AREA-CLH</div>
+          <h1 class="badge-title-cn" id="hero-title-cn">生命场（西院）</h1>
+          <div class="badge-title-en" id="hero-title-en">LIFE FARM · COURT-W-LF</div>
         </div>
-        <div class="badge-doodle-icon" id="hero-doodle">🏡</div>
+        <div class="badge-doodle-icon" id="hero-doodle">🐑</div>
       </div>
 
       <div class="badge-handwritten-quote" id="hero-handwritten">
-        「从家庭过渡到园所的第一道温柔缓冲带」
+        「双脚踩在泥土里，从被照顾者成长为生命的照料者」
       </div>
       
       <div class="badge-tags-strip" id="hero-tags">
-        <span class="badge-tag-pill">[ 秩序 ]</span>
-        <span class="badge-tag-pill">[ 温馨 ]</span>
-        <span class="badge-tag-pill">[ 连接 ]</span>
+        <span class="badge-tag-pill">[ 生命 ]</span>
+        <span class="badge-tag-pill">[ 责任 ]</span>
+        <span class="badge-tag-pill">[ 观察 ]</span>
       </div>
 
       <div style="background: #ffffff; border: 1px solid var(--paper-border); border-radius: 8px; padding: 8px 12px; font-size: 12px; color: #15803d; font-weight: 600; display: flex; align-items: center; gap: 6px;">
         <span style="font-size: 14px;">🛡️</span>
-        <span>今日环境已巡检 · 安全合规与物品归位守护中</span>
+        <span>今日环境已巡检 · 安全合规与动物照护守护中</span>
       </div>
     </section>
 
@@ -78,15 +78,9 @@
       </button>
     </nav>
 
-    <!-- View 1: Educational Philosophy (Clean View for Parents & Visitors) -->
+    <!-- View 1: Parent Educational Philosophy (Dynamic: Long Image Flow for 生命场 / Text Cards for others) -->
     <section id="view-edu-panel" class="view-panel active">
-      <!-- Seamless Vertical Long-Image Detail Presentation -->
-      <div class="parent-detail-long-container">
-        <img src="/assets/parent_details/1.jpg" alt="DADDY HOME 蒙氏空间教育解读 1" class="parent-long-img" loading="eager" />
-        <img src="/assets/parent_details/2.jpg" alt="DADDY HOME 蒙氏空间教育解读 2" class="parent-long-img" loading="lazy" />
-        <img src="/assets/parent_details/3.jpg" alt="DADDY HOME 蒙氏空间教育解读 3" class="parent-long-img" loading="lazy" />
-        <img src="/assets/parent_details/4.jpg" alt="DADDY HOME 蒙氏空间教育解读 4" class="parent-long-img" loading="lazy" />
-      </div>
+      <!-- Dynamically filled by renderEducationView -->
     </section>
 
     <!-- View 2: Teacher Patrol & Check-in Form (Teacher Flow) -->
@@ -137,7 +131,7 @@
           <label for="photo-input" class="photo-uploader-box">
             <div style="font-size: 24px; margin-bottom: 4px;">📷</div>
             <div style="font-size: 13px; font-weight: 600; color: #444;">点击拍摄或从相册选择</div>
-            <div style="font-size: 11px; color: #888;">支持一键上传环境与器材现场照片</div>
+            <div style="font-size: 11px; color: #888;">支持一键上传环境与动物照护现场照片</div>
             <input type="file" id="photo-input" accept="image/*" capture="environment" multiple style="display: none;">
           </label>
           <div class="photo-previews" id="photo-previews"></div>
@@ -169,7 +163,7 @@
         <!-- Remarks -->
         <div class="form-group">
           <label class="form-label">巡检备注 (可选)</label>
-          <textarea id="patrol-remarks" class="form-textarea" rows="2" placeholder="输入特殊情况、需维修事项或补充说明..."></textarea>
+          <textarea id="patrol-remarks" class="form-textarea" rows="2" placeholder="输入特殊情况、动物喂养状态或需补充说明..."></textarea>
         </div>
 
         <!-- Submit Button -->
@@ -185,11 +179,11 @@
     <footer style="text-align: center; padding: 20px 0 40px; color: #8c8273; font-size: 12px;">
       <div style="margin-bottom: 8px;">
         <a href="/print" style="color: var(--primary); text-decoration: none; font-weight: 700;">
-          🖨️ 打开全园区二维码标牌打印中心 (喜茶风排版)
+          🖨️ 打开生命场 & 全园区二维码标牌打印中心
         </a>
       </div>
       <div>DADDY HOME 蒙特梭利托育中心 · 数字化环境管理系统</div>
-      <div style="font-size: 11px; margin-top: 2px;">数据实时直连钉钉 AI 多维表格</div>
+      <div style="font-size: 11px; margin-top: 2px;">生命场直连钉钉 AI 多维表格子表</div>
     </footer>
 
   </main>
@@ -213,7 +207,7 @@
       <div style="font-size: 44px; margin-bottom: 8px;">🎉</div>
       <h3 style="font-size: 17px; font-weight: 800; color: #065f46; margin-bottom: 8px;">巡检打卡已成功写入！</h3>
       <p style="font-size: 13px; color: #444; margin-bottom: 14px;">
-        系统已自动在钉钉 AI 表格【<strong id="success-area-name">园所大厅</strong>】中增加一条合规巡检记录。
+        系统已自动在钉钉 AI 表格【<strong id="success-area-name">生命场</strong>】中增加一条合规巡检记录。
       </p>
       <div style="background: #faf8f5; border: 1px solid #e0d8ca; border-radius: 8px; padding: 10px; font-size: 12px; color: #555; margin-bottom: 18px; text-align: left;">
         <div>🕒 打卡时间: <span id="success-time" style="color: #222; font-weight: 600;"></span></div>

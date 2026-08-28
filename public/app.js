@@ -1,7 +1,5 @@
 // DADDY HOME Environment Patrol & Education Web App
-// Role Separation: 
-// - DingTalk Scan OR Internal Domain (*.daddyhome.club) -> Internal Teacher Patrol Mode (Auto-Login & Auto-Checkin)
-// - WeChat Scan OR External Domain (*.daddyhome.love) -> Pure Parent Educational Rationale (No Passwords / No Clutter)
+// Primary Module: 生命场 (LIFE FARM - 2tr0bHx)
 
 let AppState = {
   config: null,
@@ -27,13 +25,12 @@ async function initApp() {
     const isDingTalkEnv = /DingTalk/i.test(ua);
     const hostname = window.location.hostname || '';
     const isInternalDomain = hostname.includes('daddyhome.club');
-    const isExternalDomain = hostname.includes('daddyhome.love');
 
     const urlParams = new URLSearchParams(window.location.search);
     const targetAreaId = urlParams.get('area') || urlParams.get('sheet') || urlParams.get('id');
     const explicitRole = urlParams.get('role');
 
-    // Match Area
+    // Default to 生命场 (2tr0bHx) if not specified
     let matched = null;
     if (targetAreaId) {
       matched = AppState.config.areas.find(function(a) {
@@ -41,24 +38,20 @@ async function initApp() {
       });
     }
     if (!matched && AppState.config.areas.length > 0) {
-      matched = AppState.config.areas[0];
+      // Find 生命场 or first
+      matched = AppState.config.areas.find(function(a) { return a.id === '2tr0bHx'; }) || AppState.config.areas[0];
     }
     AppState.currentArea = matched;
 
     // Role Routing:
-    // 1. If scanned in DingTalk App -> Teacher Mode with Auto-Login
     if (isDingTalkEnv) {
       AppState.isTeacher = true;
       AppState.currentTab = 'patrol';
       await handleDingTalkAutoLogin();
-    } 
-    // 2. If accessed via Internal Domain (*.daddyhome.club) or ?role=teacher -> Teacher Mode
-    else if (isInternalDomain || explicitRole === 'teacher') {
+    } else if (isInternalDomain || explicitRole === 'teacher') {
       AppState.isTeacher = true;
       AppState.currentTab = 'patrol';
-    } 
-    // 3. If accessed via WeChat, External Domain (*.daddyhome.love), or standard browser -> Pure Parent View
-    else {
+    } else {
       AppState.isTeacher = false;
       AppState.currentTab = 'edu';
     }
@@ -114,8 +107,8 @@ function renderApp() {
   document.getElementById('hero-serial').textContent = serialNo;
   document.getElementById('hero-title-cn').textContent = area.name;
   document.getElementById('hero-title-en').textContent = area.enName + ' · ' + area.shortCode;
-  document.getElementById('hero-doodle').textContent = area.doodle || area.icon || '🏡';
-  document.getElementById('hero-handwritten').textContent = area.handwrittenNote || '「让孩子在真实环境中建构独立与专注」';
+  document.getElementById('hero-doodle').textContent = area.doodle || area.icon || '🐑';
+  document.getElementById('hero-handwritten').textContent = area.handwrittenNote || '「双脚踩在泥土里，从被照顾者成长为生命的照料者」';
   
   const tagsContainer = document.getElementById('hero-tags');
   tagsContainer.innerHTML = (area.tags || []).map(function(t) {
@@ -133,7 +126,7 @@ function renderApp() {
     if (AppState.currentTeacher && AppState.currentTeacher.name) {
       teacherBadge.innerHTML = '<span>👩‍🏫 ' + AppState.currentTeacher.name + ' 老师</span>';
     }
-    headerSubtitle.textContent = '钉钉巡检工作台 · 自动同步';
+    headerSubtitle.textContent = '钉钉巡检工作台 · 生命场';
   } else {
     teacherTabs.style.display = 'none';
     teacherBadge.style.display = 'none';
@@ -146,26 +139,28 @@ function renderApp() {
 }
 
 function renderEducationView(area) {
-  // Parent view now renders high-res seamless vertical long-image flow
-  const introEl = document.getElementById('edu-intro-text');
-  if (introEl) introEl.textContent = area.educationIntro;
+  const container = document.getElementById('view-edu-panel');
+  if (!container) return;
 
-  const principlesList = document.getElementById('edu-principles-list');
-  if (principlesList && area.montessoriPrinciples) {
-    principlesList.innerHTML = area.montessoriPrinciples.map(function(p) {
+  // If area has detailImages (like 生命场), render the seamless vertical long-image flow
+  if (area.detailImages && area.detailImages.length > 0) {
+    container.innerHTML = '<div class="parent-detail-long-container">' +
+      area.detailImages.map(function(imgUrl, idx) {
+        return '<img src="' + imgUrl + '" alt="' + area.name + ' 空间教育解读 ' + (idx + 1) + '" class="parent-long-img" loading="' + (idx === 0 ? 'eager' : 'lazy') + '" />';
+      }).join('') +
+      '</div>';
+  } else {
+    // Fallback structured cards
+    const principlesHtml = (area.montessoriPrinciples || []).map(function(p) {
       return '<div class="principle-item"><div class="principle-title">✨ ' + p.title + '</div><div class="principle-desc">' + p.desc + '</div></div>';
     }).join('');
-  }
 
-  const photoImg = document.getElementById('edu-photo-img');
-  const photoWrap = document.getElementById('edu-photo-wrap');
-  if (photoImg && photoWrap) {
-    if (area.image) {
-      photoImg.src = area.image;
-      photoWrap.style.display = 'block';
-    } else {
-      photoWrap.style.display = 'none';
-    }
+    const photoHtml = area.image ? '<div class="edu-card"><div class="edu-card-title"><span>📸</span><span>实景环境与空间美学</span></div><div class="edu-photo-wrap"><img src="' + area.image + '" alt="实景" class="edu-photo" /></div></div>' : '';
+
+    container.innerHTML = '<div class="edu-card"><div class="edu-card-title"><span>🌱</span><span>蒙特梭利环境创设理念</span></div><p class="edu-intro-text">' + area.educationIntro + '</p></div>' +
+      (principlesHtml ? '<div class="edu-card"><div class="edu-card-title"><span>🎯</span><span>空间功能与儿童能力发展</span></div><div>' + principlesHtml + '</div></div>' : '') +
+      photoHtml +
+      '<div class="edu-card" style="background: #faf8f5; border-color: #ddd4c4;"><div class="edu-card-title" style="color: #654096;"><span>🛡️</span><span>每日环境高标准巡检承诺</span></div><p style="font-size: 13px; color: #555; line-height: 1.6;">园区严格执行每日开园前、午间、闭园后多轮环境巡检与消毒维护。负责老师通过钉钉扫码严格对照标准逐项核验，守护每一个孩子的健康成长。</p></div>';
   }
 }
 
@@ -395,7 +390,7 @@ function openAreaSelector() {
   const list = document.getElementById('modal-areas-list');
   list.innerHTML = (AppState.config.areas || []).map(function(a) {
     return '<div class="area-modal-item ' + (a.id === AppState.currentArea.id ? 'active' : '') + '" onclick="selectArea(\'' + a.id + '\')">' +
-      '<div class="modal-item-icon">' + (a.doodle || a.icon || '🏡') + '</div>' +
+      '<div class="modal-item-icon">' + (a.doodle || a.icon || '🐑') + '</div>' +
       '<div>' +
         '<div class="modal-item-title">' + a.name + '</div>' +
         '<div class="modal-item-sub">' + a.enName + ' · ' + a.shortCode + '</div>' +

@@ -4,6 +4,74 @@
   "campusName": "DADDY HOME 蒙特梭利托育中心",
   "areas": [
     {
+      "id": "2tr0bHx",
+      "name": "生命场（西院）",
+      "enName": "LIFE FARM",
+      "shortCode": "COURT-W-LF",
+      "tags": [
+        "生命",
+        "责任",
+        "观察"
+      ],
+      "icon": "🐑",
+      "color": "#3B7A57",
+      "accentColor": "#f1c834",
+      "sheetId": "2tr0bHx",
+      "image": "https://images.unsplash.com/photo-1500595046743-cd271d694d30?auto=format&fit=crop&w=800&q=80",
+      "educationIntro": "泥土、植物与小动物是最好的自然导师。生命场让城市里的孩子双脚踩在真实的土地上。喂养小羊、孔雀、鸡鸭，观察植物从播种到结果的完整周期，让孩子亲身体验“生命的脆弱与生生不息”。孩子们在日常照料中学习对另一个生命的尊重与责任，从被照顾者成长为有能力的照料者。",
+      "montessoriPrinciples": [
+        {
+          "title": "双脚踩在泥土里的生命教育",
+          "desc": "接触真实土壤、昆虫与绿植，建立人与自然的深层联结，滋养孩子的感官敏锐度。"
+        },
+        {
+          "title": "从被照顾到照护生命",
+          "desc": "每日定时喂食、加水、清理草料，培养坚持不懈的责任心与温柔呵护的同理心。"
+        },
+        {
+          "title": "循环生态与自然法则",
+          "desc": "落叶归根、堆肥滋养蔬菜，在亲身劳作中理解自然的因果规律与生态循环。"
+        }
+      ],
+      "checkItems": [
+        "动物状态：小羊、孔雀、鸽子、鸡鸭精神活跃，无外伤或异常",
+        "食物与饮水：饲料新鲜无霉变，饮水清洁，食槽/水槽无污垢",
+        "活动环境：地面无粪便堆积，栏舍清洁，无异味",
+        "农具收纳：工具归位，避免随地放置，防止儿童接触",
+        "动物食物收纳：饲料桶加盖，存放干燥通风，无鼠虫",
+        "土地管理：花草无明显折断、倒伏或垃圾覆盖。树枝不低垂影响通行，花盆、护栏摆放稳固，避免绊倒。浇水适度，地面不积水。无裸露坑洼、无荒废角落，保持整体完整。"
+      ],
+      "weeklyCheckItems": [
+        "整体安全评级：是否存在高风险器材（需封闭或更换）",
+        "功能性评估：活动动线是否合理，设施使用率是否平衡",
+        "绿化养护：季节性修剪、防虫；是否需调整绿植分布",
+        "儿童体验：孩子是否积极参与，家长反馈是否正面"
+      ],
+      "fieldMap": {
+        "title": "01ZM8y7",
+        "items": "mHe1U1b",
+        "user": "9XFXz5d",
+        "date": "mKUEya0",
+        "photos": "S25BNzT",
+        "remarks": "AnxFawz",
+        "confirm": "9WygHUY",
+        "patrolType": "tSzctOu",
+        "rating_safety": "SmLXq65",
+        "rating_hygiene": "GpFh9J8",
+        "rating_supplies": "wG2LJla",
+        "rating_experience": "Pp1ZcHj",
+        "weekly_items": "9oYkyrD"
+      },
+      "handwrittenNote": "「双脚踩在泥土里，从被照顾者成长为生命的照料者」",
+      "doodle": "🐑",
+      "detailImages": [
+        "/assets/parent_details/1.jpg",
+        "/assets/parent_details/2.jpg",
+        "/assets/parent_details/3.jpg",
+        "/assets/parent_details/4.jpg"
+      ]
+    },
+    {
       "id": "MA34iZG",
       "name": "园所大厅",
       "enName": "Family Hub & Welcome Hall",
@@ -133,68 +201,6 @@
       },
       "handwrittenNote": "「把真实的工具交给有能力的孩子，感知建构的沉静」",
       "doodle": "🔨"
-    },
-    {
-      "id": "2tr0bHx",
-      "name": "生命场（西院）",
-      "enName": "LIFE FARM",
-      "shortCode": "COURT-W-LF",
-      "tags": [
-        "生命",
-        "责任",
-        "观察"
-      ],
-      "icon": "🐑",
-      "color": "#3B7A57",
-      "accentColor": "#f1c834",
-      "sheetId": "2tr0bHx",
-      "image": "https://images.unsplash.com/photo-1500595046743-cd271d694d30?auto=format&fit=crop&w=800&q=80",
-      "educationIntro": "泥土、植物与小动物是最好的自然导师。生命场让城市里的孩子双脚踩在真实的土地上。喂养小羊、孔雀、鸡鸭，观察植物从播种到结果的完整周期，让孩子亲身体验“生命的脆弱与生生不息”。孩子们在日常照料中学习对另一个生命的尊重与责任，从被照顾者成长为有能力的照料者。",
-      "montessoriPrinciples": [
-        {
-          "title": "双脚踩在泥土里的生命教育",
-          "desc": "接触真实土壤、昆虫与绿植，建立人与自然的深层联结，滋养孩子的感官敏锐度。"
-        },
-        {
-          "title": "从被照顾到照护生命",
-          "desc": "每日定时喂食、加水、清理草料，培养坚持不懈的责任心与温柔呵护的同理心。"
-        },
-        {
-          "title": "循环生态与自然法则",
-          "desc": "落叶归根、堆肥滋养蔬菜，在亲身劳作中理解自然的因果规律与生态循环。"
-        }
-      ],
-      "checkItems": [
-        "动物状态：小羊、孔雀、鸽子、鸡鸭精神活跃，无外伤或异常",
-        "食物与饮水：饲料新鲜无霉变，饮水清洁，食槽/水槽无污垢",
-        "活动环境：地面无粪便堆积，栏舍清洁，无异味",
-        "农具收纳：工具归位，避免随地放置，防止儿童接触",
-        "动物食物收纳：饲料桶加盖，存放干燥通风，无鼠虫",
-        "土地管理：花草无明显折断、倒伏或垃圾覆盖。树枝不低垂影响通行，花盆、护栏摆放稳固，避免绊倒。浇水适度，地面不积水。无裸露坑洼、无荒废角落，保持整体完整。"
-      ],
-      "weeklyCheckItems": [
-        "整体安全评级：是否存在高风险器材（需封闭或更换）",
-        "功能性评估：活动动线是否合理，设施使用率是否平衡",
-        "绿化养护：季节性修剪、防虫；是否需调整绿植分布",
-        "儿童体验：孩子是否积极参与，家长反馈是否正面"
-      ],
-      "fieldMap": {
-        "title": "01ZM8y7",
-        "items": "mHe1U1b",
-        "user": "9XFXz5d",
-        "date": "mKUEya0",
-        "photos": "S25BNzT",
-        "remarks": "AnxFawz",
-        "confirm": "9WygHUY",
-        "patrolType": "tSzctOu",
-        "rating_safety": "SmLXq65",
-        "rating_hygiene": "GpFh9J8",
-        "rating_supplies": "wG2LJla",
-        "rating_experience": "Pp1ZcHj",
-        "weekly_items": "9oYkyrD"
-      },
-      "handwrittenNote": "「双脚踩在泥土里，从被照顾者成长为生命的照料者」",
-      "doodle": "🐑"
     },
     {
       "id": "YXFqLC8",
