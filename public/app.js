@@ -1,4 +1,6 @@
-// DADDY HOME 生命场 (LIFE FARM)
+// DADDY HOME Campus Environment Patrol & Space Education
+// Clean Sub-route Resolution (e.g. /life-farm, /woodworking, /hall, /areas/:id, or ?area=...)
+
 let AppState = {
   config: null,
   area: null,
@@ -15,6 +17,9 @@ document.addEventListener('DOMContentLoaded', async function() {
 
 async function initApp() {
   try {
+    const res = await fetch('/api/config');
+    AppState.config = await res.json();
+
     const ua = navigator.userAgent || '';
     const isDingTalkEnv = /DingTalk/i.test(ua);
     const hostname = window.location.hostname || '';
@@ -23,18 +28,38 @@ async function initApp() {
     const urlParams = new URLSearchParams(window.location.search);
     const explicitRole = urlParams.get('role');
 
-    // 1. Role Decision:
-    // If DingTalk scan OR internal domain (*.daddyhome.club) OR ?role=teacher -> Teacher Patrol Workspace
-    // Otherwise -> Pure 4-Image Presentation (Nothing else!)
+    // 1. Resolve Target Area from Sub-route Path or Query
+    // Path examples: /life-farm, /woodworking, /areas/2tr0bHx, /areas/life-farm
+    const pathname = window.location.pathname.replace(/^\/+|\/+$/g, '');
+    const pathParts = pathname.split('/');
+    const subRouteKey = pathParts.length > 0 ? (pathParts[0] === 'areas' && pathParts[1] ? pathParts[1] : pathParts[0]) : '';
+    const queryKey = urlParams.get('area') || urlParams.get('sheet') || urlParams.get('id');
+
+    const searchKey = (queryKey || subRouteKey || 'life-farm').toLowerCase();
+
+    let matched = AppState.config.areas.find(function(a) {
+      if (!a) return false;
+      if (a.id && a.id.toLowerCase() === searchKey) return true;
+      if (a.sheetId && a.sheetId.toLowerCase() === searchKey) return true;
+      if (a.shortCode && a.shortCode.toLowerCase() === searchKey) return true;
+      if (a.slug && a.slug.toLowerCase() === searchKey) return true;
+      if (a.aliases && a.aliases.some(function(alias) { return alias.toLowerCase() === searchKey; })) return true;
+      return false;
+    });
+
+    if (!matched && AppState.config.areas.length > 0) {
+      matched = AppState.config.areas.find(function(a) { return a.slug === 'life-farm' || a.id === '2tr0bHx'; }) || AppState.config.areas[0];
+    }
+    AppState.area = matched;
+
+    console.log('[Sub-route Resolved]', { searchKey: searchKey, areaName: matched.name, areaId: matched.id, slug: matched.slug });
+
+    // 2. Role Decision:
     if (isDingTalkEnv || isInternalDomain || explicitRole === 'teacher') {
       AppState.isTeacher = true;
       document.body.classList.add('teacher-mode-body');
       document.getElementById('parent-pure-image-flow').style.display = 'none';
       document.getElementById('teacher-workspace').style.display = 'block';
-
-      const res = await fetch('/api/config');
-      AppState.config = await res.json();
-      AppState.area = AppState.config.areas.find(function(a) { return a.id === '2tr0bHx'; }) || AppState.config.areas[0];
 
       if (isDingTalkEnv) {
         await handleDingTalkAutoLogin();
@@ -42,13 +67,36 @@ async function initApp() {
       renderTeacherForm();
       setupEventListeners();
     } else {
-      // PURE PARENT VIEW: Keep only the 4 images, zero JS processing needed
       AppState.isTeacher = false;
+      document.body.classList.remove('teacher-mode-body');
       document.getElementById('parent-pure-image-flow').style.display = 'flex';
       document.getElementById('teacher-workspace').style.display = 'none';
+
+      renderParentView();
     }
   } catch (err) {
     console.error('Init error:', err);
+  }
+}
+
+function renderParentView() {
+  const container = document.getElementById('parent-pure-image-flow');
+  const area = AppState.area;
+  if (!container || !area) return;
+
+  // If area has dedicated detail images (e.g. 生命场 4 images from 你的段落文字)
+  if (area.detailImages && area.detailImages.length > 0) {
+    container.innerHTML = area.detailImages.map(function(imgUrl, idx) {
+      return '<img src="' + imgUrl + '" alt="' + area.name + ' 空间教育解读 ' + (idx + 1) + '" class="parent-pure-img" loading="' + (idx === 0 ? 'eager' : 'lazy') + '" />';
+    }).join('');
+  } else {
+    // Fallback presentation for other areas
+    container.innerHTML = '<div style="background: #fff; padding: 24px 20px; line-height: 1.6; font-size: 15px;">' +
+      '<h1 style="font-size: 22px; font-weight: 800; color: #654096; margin-bottom: 8px;">' + area.name + '</h1>' +
+      '<p style="color: #666; font-size: 14px; margin-bottom: 16px;">' + (area.handwrittenNote || '') + '</p>' +
+      '<p style="color: #333; line-height: 1.8;">' + (area.educationIntro || '') + '</p>' +
+      (area.image ? '<img src="' + area.image + '" style="width: 100%; border-radius: 8px; margin-top: 14px;" />' : '') +
+      '</div>';
   }
 }
 
@@ -80,6 +128,12 @@ async function handleDingTalkAutoLogin() {
 }
 
 function renderTeacherForm() {
+  const area = AppState.area;
+  if (!area) return;
+
+  document.getElementById('teacher-area-title').textContent = area.name + ' 巡检标准核验';
+  document.getElementById('header-area-subtitle').textContent = '钉钉巡检工作台 · ' + area.name;
+
   const staffSelect = document.getElementById('staff-select');
   staffSelect.innerHTML = (AppState.config.staff || []).map(function(s) {
     return '<option value="' + s.userid + '" data-name="' + s.name + '">' + s.name + ' (' + (s.title || '教师') + ')</option>';
@@ -91,7 +145,7 @@ function renderTeacherForm() {
 
   AppState.selectedItems.clear();
   const checklistContainer = document.getElementById('patrol-checklist');
-  const items = AppState.area ? (AppState.area.checkItems || []) : [];
+  const items = area.checkItems || [];
   
   checklistContainer.innerHTML = items.map(function(item, idx) {
     return '<label class="check-item-label" data-idx="' + idx + '" onclick="toggleCheckItem(' + idx + ', this)">' +
@@ -254,6 +308,7 @@ function showSuccessModal(data) {
   document.getElementById('success-time').textContent = data.timestamp;
   document.getElementById('success-user').textContent = data.userName;
   document.getElementById('success-record-id').textContent = data.recordId;
+  document.getElementById('success-area-name').textContent = data.areaName;
   modal.classList.add('active');
 }
 

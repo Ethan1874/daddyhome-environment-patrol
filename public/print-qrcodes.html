@@ -239,7 +239,7 @@
           const container = document.getElementById('qrcode-' + area.id);
           if (container) {
             container.innerHTML = '';
-            const targetUrl = origin + '/?area=' + area.id;
+            const targetUrl = origin + '/' + (area.slug || area.id);
             new QRCode(container, {
               text: targetUrl,
               width: 145,

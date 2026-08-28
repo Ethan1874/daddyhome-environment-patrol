@@ -69,6 +69,13 @@
         "/assets/parent_details/2.jpg",
         "/assets/parent_details/3.jpg",
         "/assets/parent_details/4.jpg"
+      ],
+      "slug": "life-farm",
+      "aliases": [
+        "life-farm",
+        "lifefarm",
+        "2tr0bHx",
+        "court-w-lf"
       ]
     },
     {
@@ -136,7 +143,14 @@
         "weekly_items": "9oYkyrD"
       },
       "handwrittenNote": "「从家庭过渡到园所的第一道温柔缓冲带」",
-      "doodle": "🏡"
+      "doodle": "🏡",
+      "slug": "hall",
+      "aliases": [
+        "hall",
+        "MA34iZG",
+        "welcome-hall",
+        "clh"
+      ]
     },
     {
       "id": "ge6m9XC",
@@ -200,7 +214,14 @@
         "weekly_items": "9oYkyrD"
       },
       "handwrittenNote": "「把真实的工具交给有能力的孩子，感知建构的沉静」",
-      "doodle": "🔨"
+      "doodle": "🔨",
+      "slug": "woodworking",
+      "aliases": [
+        "woodworking",
+        "ge6m9XC",
+        "creative-lab",
+        "r-cl"
+      ]
     },
     {
       "id": "YXFqLC8",
@@ -262,7 +283,14 @@
         "weekly_items": "9oYkyrD"
       },
       "handwrittenNote": "「在树屋与绳网间，测量自己的身体与勇气边界」",
-      "doodle": "🌲"
+      "doodle": "🌲",
+      "slug": "adventure",
+      "aliases": [
+        "adventure",
+        "YXFqLC8",
+        "kRER5TK",
+        "court-s-ad"
+      ]
     },
     {
       "id": "hERWDMS",
@@ -324,7 +352,14 @@
         "weekly_items": "9oYkyrD"
       },
       "handwrittenNote": "「在风与阳光中奔跑，让前庭觉与体能自然生发」",
-      "doodle": "🌱"
+      "doodle": "🌱",
+      "slug": "lawn",
+      "aliases": [
+        "lawn",
+        "hERWDMS",
+        "green-lawn",
+        "court-e-gl"
+      ]
     },
     {
       "id": "TPM8LPh",
@@ -390,7 +425,14 @@
         "weekly_items": "9oYkyrD"
       },
       "handwrittenNote": "「在晨间的第一声问候与自主更鞋里，开启独立日常」",
-      "doodle": "🚪"
+      "doodle": "🚪",
+      "slug": "gate",
+      "aliases": [
+        "gate",
+        "TPM8LPh",
+        "main-gate",
+        "gate-0"
+      ]
     },
     {
       "id": "k6U7VNy",
@@ -448,7 +490,13 @@
         "sub_items": "zGZFwhi"
       },
       "handwrittenNote": "「律动、绘本与身体探索，唤醒感官与丰富表达」",
-      "doodle": "🎨"
+      "doodle": "🎨",
+      "slug": "weplay",
+      "aliases": [
+        "weplay",
+        "k6U7VNy",
+        "c-weplay"
+      ]
     },
     {
       "id": "o5rH9XG",
@@ -506,7 +554,14 @@
         "sub_items": "zGZFwhi"
       },
       "handwrittenNote": "「以开放与平等之姿，连接家庭、学校与社区」",
-      "doodle": "☕"
+      "doodle": "☕",
+      "slug": "cospace",
+      "aliases": [
+        "cospace",
+        "co-space",
+        "o5rH9XG",
+        "c-cospace"
+      ]
     },
     {
       "id": "Ibi6IE6",
@@ -566,7 +621,14 @@
         "weekly_items": "9oYkyrD"
       },
       "handwrittenNote": "「室内外的自然流转，在光影与微风中感受四季时序」",
-      "doodle": "🌿"
+      "doodle": "🌿",
+      "slug": "veranda",
+      "aliases": [
+        "veranda",
+        "Ibi6IE6",
+        "porch",
+        "veranda-1"
+      ]
     }
   ],
   "teacherPasscode": "2026"
