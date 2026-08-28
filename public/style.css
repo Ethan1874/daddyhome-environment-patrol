@@ -1,18 +1,21 @@
 /* DADDY HOME Environment Patrol & Education Web App */
 
 :root {
-  --primary: #654096;
-  --primary-light: #f4eff9;
-  --primary-hover: #523080;
+  --primary: #5c388d;
+  --primary-light: #f3ecf9;
+  --primary-hover: #4a2c75;
   --accent: #e5a823;
-  --paper-bg: #fbf9f5;
+  --success: #16a34a;
+  --success-light: #edfcf2;
+  --paper-bg: #f7f4ee;
   --paper-card: #ffffff;
-  --paper-border: #e8e3d9;
-  --text-main: #232323;
-  --text-muted: #666666;
-  --font-editorial: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", sans-serif;
+  --paper-border: #e6dfd3;
+  --text-main: #1f1f1f;
+  --text-muted: #6b6357;
+  --font-editorial: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
   --font-mono: "SF Mono", "Menlo", "Courier New", monospace;
-  --shadow-paper: 0 4px 20px rgba(70, 50, 30, 0.06);
+  --shadow-sm: 0 2px 8px rgba(50, 40, 30, 0.05);
+  --shadow-md: 0 4px 16px rgba(50, 40, 30, 0.08);
 }
 
 * {
@@ -33,7 +36,7 @@ body {
 }
 
 /* ============================================================ */
-/* PURE PARENT DETAIL LONG-IMAGE DISPLAY (ONLY 4 IMAGES)        */
+/* PURE PARENT DETAIL LONG-IMAGE DISPLAY (ONLY 7 IMAGES)        */
 /* ============================================================ */
 
 #parent-pure-image-flow {
@@ -60,38 +63,38 @@ body {
 }
 
 /* ============================================================ */
-/* TEACHER PATROL WORKSPACE (SHOWN ONLY IN TEACHER / DINGTALK)   */
+/* TEACHER PATROL WORKSPACE (DINGTALK MOBILE DEDICATED)         */
 /* ============================================================ */
 
-.teacher-mode-body {
-  background-color: #f3efe6;
-  line-height: 1.6;
-  font-size: 15px;
+body.teacher-mode-body {
+  background-color: var(--paper-bg);
+  line-height: 1.5;
+  font-size: 14px;
 }
 
-.app-header {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: rgba(251, 249, 245, 0.95);
-  backdrop-filter: blur(8px);
-  border-bottom: 1px solid var(--paper-border);
-  padding: 12px 18px;
+.teacher-app-container {
+  max-width: 540px;
+  margin: 0 auto;
+  padding: 12px 14px 60px;
+}
+
+/* Header */
+.teacher-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 8px 4px 12px;
 }
 
-.brand-badge {
+.brand-row {
   display: flex;
   align-items: center;
-  gap: 10px;
-  text-decoration: none;
+  gap: 8px;
 }
 
-.brand-logo-icon {
-  width: 32px;
-  height: 32px;
+.brand-icon {
+  width: 28px;
+  height: 28px;
   background: var(--primary);
   color: #fff;
   border-radius: 6px;
@@ -99,95 +102,210 @@ body {
   align-items: center;
   justify-content: center;
   font-weight: 800;
-  font-size: 15px;
-}
-
-.brand-titles {
-  display: flex;
-  flex-direction: column;
-}
-
-.brand-main-title {
   font-size: 14px;
+}
+
+.brand-title {
+  font-size: 13px;
   font-weight: 800;
   color: var(--primary);
+  letter-spacing: 0.5px;
 }
 
-.brand-sub-title {
-  font-size: 11px;
+.brand-subtitle {
+  font-size: 10px;
   color: var(--text-muted);
 }
 
-.app-container {
-  max-width: 520px;
-  width: 100%;
-  margin: 0 auto;
-  padding: 16px;
-}
-
-.form-card {
-  background: #ffffff;
+/* Teacher Identity Card */
+.teacher-id-card {
+  background: linear-gradient(135deg, #ffffff 0%, #faf6ff 100%);
+  border: 1px solid rgba(101, 64, 150, 0.2);
   border-radius: 12px;
-  padding: 18px;
-  margin-bottom: 14px;
-  border: 1px solid var(--paper-border);
-  box-shadow: var(--shadow-paper);
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.form-header-row {
+.teacher-info-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.teacher-avatar {
+  width: 44px;
+  height: 44px;
+  background: var(--primary-light);
+  color: var(--primary);
+  border: 2px solid rgba(101, 64, 150, 0.25);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 700;
+  overflow: hidden;
+}
+
+.teacher-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.teacher-meta-name {
+  font-size: 16px;
+  font-weight: 800;
+  color: #1a1a1a;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.teacher-meta-role {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.session-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--success);
+  background: var(--success-light);
+  padding: 2px 8px;
+  border-radius: 10px;
+  border: 1px solid rgba(22, 163, 74, 0.2);
+  margin-top: 4px;
+}
+
+.switch-teacher-btn {
+  background: #ffffff;
+  border: 1px solid var(--paper-border);
+  color: var(--primary);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+/* Area Hero Card */
+.area-patrol-banner {
+  background: #ffffff;
+  border: 1px solid var(--paper-border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.area-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.area-icon-box {
+  width: 38px;
+  height: 38px;
+  background: var(--paper-bg);
+  border: 1px solid var(--paper-border);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.area-title-text {
+  font-size: 16px;
+  font-weight: 800;
+  color: #222;
+}
+
+.area-code-text {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.patrol-type-badge {
+  background: var(--primary-light);
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+/* Form Container Card */
+.form-section-card {
+  background: #ffffff;
+  border: 1px solid var(--paper-border);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow-sm);
+}
+
+.form-header-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f0eae0;
 }
 
-.form-section-title {
+.form-header-title {
   font-size: 14px;
   font-weight: 800;
   color: #222;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
-.quick-select-all-btn {
-  background: #eef7ee;
-  color: #1e7e34;
-  border: 1px solid #c8e6c9;
-  border-radius: 14px;
-  padding: 3px 10px;
+.quick-pass-btn {
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 18px;
+  padding: 6px 14px;
   font-size: 12px;
   font-weight: 700;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  box-shadow: 0 2px 8px rgba(22, 163, 74, 0.25);
+  transition: transform 0.1s;
 }
 
-.form-group {
-  margin-bottom: 14px;
+.quick-pass-btn:active {
+  transform: scale(0.96);
 }
 
-.form-label {
-  display: block;
-  font-size: 12px;
-  font-weight: 700;
-  color: #555;
-  margin-bottom: 6px;
-}
-
-.form-select, .form-input, .form-textarea {
-  width: 100%;
-  padding: 9px 12px;
-  border: 1px solid var(--paper-border);
-  border-radius: 8px;
-  font-family: inherit;
-  font-size: 14px;
-  color: #222;
-  background: #fff;
-}
-
-.checklist {
+/* Checklist Items */
+.checklist-container {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.check-item-label {
+.check-item-row {
   display: flex;
   align-items: flex-start;
   gap: 10px;
@@ -196,17 +314,17 @@ body {
   border: 1px solid var(--paper-border);
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all 0.15s ease;
 }
 
-.check-item-label.checked {
+.check-item-row.checked {
   background: var(--primary-light);
-  border-color: rgba(101, 64, 150, 0.3);
+  border-color: rgba(101, 64, 150, 0.35);
 }
 
-.custom-checkbox {
-  width: 18px;
-  height: 18px;
+.check-box-icon {
+  width: 20px;
+  height: 20px;
   border: 2px solid #bbb;
   border-radius: 4px;
   margin-top: 1px;
@@ -214,58 +332,75 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 13px;
+  font-weight: 800;
+  color: transparent;
+  background: #fff;
+  transition: all 0.15s;
 }
 
-.check-item-label.checked .custom-checkbox {
+.check-item-row.checked .check-box-icon {
   background: var(--primary);
   border-color: var(--primary);
-  color: #fff;
+  color: #ffffff;
 }
 
-.check-item-text {
+.check-text-content {
   font-size: 13px;
-  color: #222;
-  line-height: 1.4;
+  color: #333;
+  line-height: 1.45;
 }
 
-.photo-uploader-box {
-  border: 2px dashed #c4b9a3;
+.check-item-row.checked .check-text-content {
+  color: #1a1a1a;
+  font-weight: 600;
+}
+
+/* Photo Upload */
+.photo-upload-area {
+  border: 2px dashed #c9bfb0;
   border-radius: 10px;
   padding: 14px;
   text-align: center;
-  background: var(--paper-bg);
+  background: #fbf9f6;
   cursor: pointer;
   display: block;
+  transition: border-color 0.2s;
 }
 
-.photo-previews {
+.photo-upload-area:active {
+  border-color: var(--primary);
+}
+
+.photo-grid-preview {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
   margin-top: 10px;
 }
 
-.thumb-wrap {
+.photo-thumb-item {
   position: relative;
-  display: inline-block;
-}
-
-.preview-thumb {
-  width: 65px;
-  height: 65px;
+  width: 68px;
+  height: 68px;
   border-radius: 6px;
-  object-fit: cover;
+  overflow: hidden;
   border: 1px solid var(--paper-border);
 }
 
-.thumb-remove {
+.photo-thumb-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photo-thumb-remove {
   position: absolute;
-  top: -5px;
-  right: -5px;
+  top: 2px;
+  right: 2px;
   width: 18px;
   height: 18px;
-  background: #e53e3e;
+  background: rgba(220, 38, 38, 0.9);
   color: #fff;
   border-radius: 50%;
   font-size: 11px;
@@ -275,53 +410,79 @@ body {
   cursor: pointer;
 }
 
-.ratings-grid {
+/* Ratings */
+.ratings-2col-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
 }
 
-.rating-box {
+.rating-card {
   background: var(--paper-bg);
   padding: 8px 10px;
-  border-radius: 6px;
+  border-radius: 8px;
   border: 1px solid var(--paper-border);
 }
 
-.rating-label {
+.rating-card-label {
   font-size: 11px;
   font-weight: 700;
   color: #666;
 }
 
-.stars-row {
+.rating-stars-list {
   color: #f59e0b;
-  font-size: 15px;
+  font-size: 16px;
   margin-top: 2px;
+  letter-spacing: 2px;
 }
 
-.submit-btn {
+/* Textarea */
+.form-input-box {
   width: 100%;
-  background: var(--primary);
+  padding: 10px 12px;
+  border: 1px solid var(--paper-border);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 13px;
+  color: #222;
+  background: #fff;
+}
+
+/* Submit Action Button */
+.patrol-submit-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #5c388d 0%, #4a2c75 100%);
   color: #ffffff;
   border: none;
-  padding: 13px 20px;
-  border-radius: 10px;
+  padding: 14px 20px;
+  border-radius: 12px;
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 800;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  box-shadow: 0 4px 12px rgba(101, 64, 150, 0.25);
-  margin: 12px 0 30px;
+  gap: 8px;
+  box-shadow: 0 4px 14px rgba(92, 56, 141, 0.3);
+  margin-top: 6px;
+  transition: transform 0.1s, opacity 0.2s;
 }
 
+.patrol-submit-btn:active {
+  transform: scale(0.98);
+}
+
+.patrol-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Success Modal */
 .modal-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0,0,0,0.6);
   backdrop-filter: blur(4px);
   z-index: 999;
   display: none;
@@ -336,11 +497,40 @@ body {
 
 .modal-dialog {
   background: #fff;
-  border-radius: 14px;
+  border-radius: 16px;
   max-width: 420px;
   width: 100%;
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  box-shadow: 0 12px 36px rgba(0,0,0,0.2);
+  padding: 24px 20px;
+  text-align: center;
+}
+
+/* Switch Teacher Modal */
+.staff-switch-modal-body {
+  max-height: 320px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 12px 0 16px;
+  text-align: left;
+}
+
+.staff-switch-option {
+  padding: 10px 12px;
+  background: var(--paper-bg);
+  border: 1px solid var(--paper-border);
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.staff-switch-option:active {
+  background: var(--primary-light);
+  border-color: var(--primary);
 }
 
 .toast-msg {
@@ -348,14 +538,15 @@ body {
   bottom: 24px;
   left: 50%;
   transform: translateX(-50%) translateY(100px);
-  background: #222;
+  background: rgba(30, 25, 35, 0.95);
   color: #fff;
   padding: 10px 18px;
-  border-radius: 20px;
+  border-radius: 24px;
   font-size: 13px;
   font-weight: 600;
   z-index: 1000;
   transition: transform 0.25s ease;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
 }
 
 .toast-msg.show {

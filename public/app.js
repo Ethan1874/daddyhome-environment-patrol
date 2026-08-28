@@ -1,5 +1,8 @@
 // DADDY HOME Campus Environment Patrol & Space Education
-// Clean Sub-route Resolution (e.g. /life-farm, /woodworking, /hall, /areas/:id, or ?area=...)
+// DingTalk Long-Lived Teacher Auth (90 Days Persistence) & Direct Identity Record
+
+const SESSION_STORAGE_KEY = 'dh_patrol_teacher_session_v2';
+const DEFAULT_EXPIRY_DAYS = 90;
 
 let AppState = {
   config: null,
@@ -28,8 +31,7 @@ async function initApp() {
     const urlParams = new URLSearchParams(window.location.search);
     const explicitRole = urlParams.get('role');
 
-    // 1. Resolve Target Area from Sub-route Path or Query
-    // Path examples: /life-farm, /woodworking, /areas/2tr0bHx, /areas/life-farm
+    // 1. Resolve Target Area from Sub-route Path or Query (e.g. /life-farm, /woodworking, etc.)
     const pathname = window.location.pathname.replace(/^\/+|\/+$/g, '');
     const pathParts = pathname.split('/');
     const subRouteKey = pathParts.length > 0 ? (pathParts[0] === 'areas' && pathParts[1] ? pathParts[1] : pathParts[0]) : '';
@@ -52,21 +54,33 @@ async function initApp() {
     }
     AppState.area = matched;
 
-    console.log('[Sub-route Resolved]', { searchKey: searchKey, areaName: matched.name, areaId: matched.id, slug: matched.slug });
+    // 2. Check Saved Long-Lived Teacher Session
+    const savedSession = loadTeacherSession();
 
-    // 2. Role Decision:
-    if (isDingTalkEnv || isInternalDomain || explicitRole === 'teacher') {
+    // 3. Role Decision:
+    if (isDingTalkEnv || isInternalDomain || explicitRole === 'teacher' || savedSession) {
       AppState.isTeacher = true;
       document.body.classList.add('teacher-mode-body');
       document.getElementById('parent-pure-image-flow').style.display = 'none';
       document.getElementById('teacher-workspace').style.display = 'block';
 
+      if (savedSession && savedSession.user) {
+        AppState.currentTeacher = savedSession.user;
+      }
+
+      // If in DingTalk App, trigger silent auto-login to refresh / verify identity
       if (isDingTalkEnv) {
         await handleDingTalkAutoLogin();
+      } else if (!AppState.currentTeacher && AppState.config.staff && AppState.config.staff.length > 0) {
+        // Fallback default teacher
+        AppState.currentTeacher = AppState.config.staff[0];
+        saveTeacherSession(AppState.currentTeacher, DEFAULT_EXPIRY_DAYS);
       }
-      renderTeacherForm();
+
+      renderTeacherWorkspace();
       setupEventListeners();
     } else {
+      // PURE PARENT VIEW: strictly 7 images
       AppState.isTeacher = false;
       document.body.classList.remove('teacher-mode-body');
       document.getElementById('parent-pure-image-flow').style.display = 'flex';
@@ -79,27 +93,36 @@ async function initApp() {
   }
 }
 
-function renderParentView() {
-  const container = document.getElementById('parent-pure-image-flow');
-  const area = AppState.area;
-  if (!container || !area) return;
-
-  // If area has dedicated detail images (e.g. 生命场 4 images from 你的段落文字)
-  if (area.detailImages && area.detailImages.length > 0) {
-    container.innerHTML = area.detailImages.map(function(imgUrl, idx) {
-      return '<img src="' + imgUrl + '" alt="' + area.name + ' 空间教育解读 ' + (idx + 1) + '" class="parent-pure-img" loading="' + (idx === 0 ? 'eager' : 'lazy') + '" />';
-    }).join('');
-  } else {
-    // Fallback presentation for other areas
-    container.innerHTML = '<div style="background: #fff; padding: 24px 20px; line-height: 1.6; font-size: 15px;">' +
-      '<h1 style="font-size: 22px; font-weight: 800; color: #654096; margin-bottom: 8px;">' + area.name + '</h1>' +
-      '<p style="color: #666; font-size: 14px; margin-bottom: 16px;">' + (area.handwrittenNote || '') + '</p>' +
-      '<p style="color: #333; line-height: 1.8;">' + (area.educationIntro || '') + '</p>' +
-      (area.image ? '<img src="' + area.image + '" style="width: 100%; border-radius: 8px; margin-top: 14px;" />' : '') +
-      '</div>';
-  }
+// -------------------------------------------------------------
+// Long-Lived Session Helpers (90 Days Persistence)
+// -------------------------------------------------------------
+function saveTeacherSession(user, days) {
+  const expiry = Date.now() + (days || DEFAULT_EXPIRY_DAYS) * 24 * 3600 * 1000;
+  const sessionData = {
+    user: user,
+    expiresAt: expiry
+  };
+  try {
+    localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(sessionData));
+  } catch(e) {}
 }
 
+function loadTeacherSession() {
+  try {
+    const raw = localStorage.getItem(SESSION_STORAGE_KEY);
+    if (!raw) return null;
+    const data = JSON.parse(raw);
+    if (data && data.expiresAt && data.expiresAt > Date.now()) {
+      return data;
+    }
+    localStorage.removeItem(SESSION_STORAGE_KEY);
+  } catch(e) {}
+  return null;
+}
+
+// -------------------------------------------------------------
+// DingTalk JSAPI Silent Auth
+// -------------------------------------------------------------
 async function handleDingTalkAutoLogin() {
   if (window.dd && window.dd.runtime && window.dd.runtime.permission) {
     try {
@@ -115,47 +138,73 @@ async function handleDingTalkAutoLogin() {
             const data = await res.json();
             if (data.success && data.user) {
               AppState.currentTeacher = data.user;
-              document.getElementById('teacher-name-badge').textContent = '👩‍🏫 ' + data.user.name + ' 老师';
-              const staffSelect = document.getElementById('staff-select');
-              if (staffSelect) staffSelect.value = data.user.userid;
+              saveTeacherSession(data.user, DEFAULT_EXPIRY_DAYS);
+              updateTeacherCard();
               showToast('👩‍🏫 钉钉免登已识别：' + data.user.name + ' 老师');
             }
+          },
+          onFail: function(err) {
+            console.log('[DingTalk JSAPI Code Fail]', err);
           }
         });
       });
-    } catch(e) {}
+    } catch(e) {
+      console.log('[DingTalk JSAPI Error]', e);
+    }
   }
 }
 
-function renderTeacherForm() {
+function renderTeacherWorkspace() {
+  updateTeacherCard();
+  updateAreaBanner();
+  renderChecklist();
+  renderStars();
+}
+
+function updateTeacherCard() {
+  const teacher = AppState.currentTeacher || { name: '负责老师', title: '巡检教师', dept: '托育教学部' };
+  document.getElementById('current-teacher-name').textContent = teacher.name;
+  document.getElementById('current-teacher-dept').textContent = (teacher.dept || '教学部') + ' · ' + (teacher.title || '主班教师');
+  
+  const submitBtnText = document.getElementById('submit-btn-text');
+  if (submitBtnText) {
+    submitBtnText.textContent = '确认并以【' + teacher.name + '】老师身份提交打卡';
+  }
+
+  const avatarBox = document.getElementById('teacher-avatar-box');
+  if (avatarBox) {
+    if (teacher.avatar) {
+      avatarBox.innerHTML = '<img src="' + teacher.avatar + '" alt="' + teacher.name + '" />';
+    } else {
+      avatarBox.innerHTML = '<span>' + (teacher.name.charAt(0) || '师') + '</span>';
+    }
+  }
+}
+
+function updateAreaBanner() {
+  const area = AppState.area;
+  if (!area) return;
+  document.getElementById('area-icon-box').textContent = area.doodle || area.icon || '🐑';
+  document.getElementById('area-title-text').textContent = area.name;
+  document.getElementById('area-code-text').textContent = area.shortCode + ' · ' + (area.enName || 'AREA');
+}
+
+function renderChecklist() {
   const area = AppState.area;
   if (!area) return;
 
-  document.getElementById('teacher-area-title').textContent = area.name + ' 巡检标准核验';
-  document.getElementById('header-area-subtitle').textContent = '钉钉巡检工作台 · ' + area.name;
-
-  const staffSelect = document.getElementById('staff-select');
-  staffSelect.innerHTML = (AppState.config.staff || []).map(function(s) {
-    return '<option value="' + s.userid + '" data-name="' + s.name + '">' + s.name + ' (' + (s.title || '教师') + ')</option>';
-  }).join('');
-
-  if (AppState.currentTeacher && AppState.currentTeacher.userid) {
-    staffSelect.value = AppState.currentTeacher.userid;
-  }
-
   AppState.selectedItems.clear();
-  const checklistContainer = document.getElementById('patrol-checklist');
+  const container = document.getElementById('patrol-checklist');
   const items = area.checkItems || [];
-  
-  checklistContainer.innerHTML = items.map(function(item, idx) {
-    return '<label class="check-item-label" data-idx="' + idx + '" onclick="toggleCheckItem(' + idx + ', this)">' +
-      '<div class="custom-checkbox">✓</div>' +
-      '<div class="check-item-text">' + item + '</div>' +
-    '</label>';
+
+  container.innerHTML = items.map(function(item, idx) {
+    return '<div class="check-item-row" data-idx="' + idx + '" onclick="toggleCheckItem(' + idx + ', this)">' +
+      '<div class="check-box-icon">✓</div>' +
+      '<div class="check-text-content">' + item + '</div>' +
+    '</div>';
   }).join('');
 
   selectAllCheckItems();
-  renderStars();
 }
 
 function toggleCheckItem(idx, element) {
@@ -172,8 +221,8 @@ function toggleCheckItem(idx, element) {
 function selectAllCheckItems() {
   const items = AppState.area ? (AppState.area.checkItems || []) : [];
   AppState.selectedItems = new Set(items);
-  const labels = document.querySelectorAll('.check-item-label');
-  labels.forEach(function(l) { l.classList.add('checked'); });
+  const rows = document.querySelectorAll('.check-item-row');
+  rows.forEach(function(r) { r.classList.add('checked'); });
   showToast('已一键全选所有巡检标准项 ✅');
 }
 
@@ -216,9 +265,9 @@ function handlePhotoCapture(event) {
 function renderPhotoPreviews() {
   const container = document.getElementById('photo-previews');
   container.innerHTML = AppState.uploadedPhotos.map(function(p, idx) {
-    return '<div class="thumb-wrap">' +
-      '<img src="' + p + '" class="preview-thumb" />' +
-      '<div class="thumb-remove" onclick="removePhoto(' + idx + ')">×</div>' +
+    return '<div class="photo-thumb-item">' +
+      '<img src="' + p + '" />' +
+      '<div class="photo-thumb-remove" onclick="removePhoto(' + idx + ')">×</div>' +
     '</div>';
   }).join('');
 }
@@ -256,26 +305,22 @@ function compressImage(base64Data, maxDimension, quality, callback) {
 
 async function submitPatrol() {
   const area = AppState.area;
-  const staffSelect = document.getElementById('staff-select');
-  const userId = staffSelect.value;
-  const selectedOption = staffSelect.options[staffSelect.selectedIndex];
-  const userName = selectedOption ? selectedOption.getAttribute('data-name') : '负责老师';
-
-  const patrolType = document.getElementById('patrol-type-select').value;
+  const teacher = AppState.currentTeacher || { userid: '015018644521509971', name: '周士顶' };
+  
   const remarks = document.getElementById('patrol-remarks').value.trim();
   const checkItemsList = Array.from(AppState.selectedItems);
 
   const submitBtn = document.getElementById('submit-patrol-btn');
   submitBtn.disabled = true;
-  submitBtn.innerHTML = '<span>⏳ 正在同步写入钉钉AI表格...</span>';
+  submitBtn.innerHTML = '<span>⏳ 正在以【' + teacher.name + '】老师身份写入钉钉AI表格...</span>';
 
   const payload = {
     areaId: area.id,
     sheetId: area.sheetId,
     areaName: area.name,
-    patrolType: patrolType,
-    userId: userId,
-    userName: userName,
+    patrolType: '每日巡检',
+    userId: teacher.userid,
+    userName: teacher.name,
     checkItems: checkItemsList,
     ratings: AppState.ratings,
     remarks: remarks,
@@ -291,7 +336,7 @@ async function submitPatrol() {
 
     const result = await res.json();
     if (result.success) {
-      showSuccessModal(result);
+      showSuccessModal(result, teacher);
     } else {
       alert('打卡失败: ' + (result.error || '未知错误'));
     }
@@ -299,14 +344,14 @@ async function submitPatrol() {
     alert('网络异常，打卡提交失败，请重试');
   } finally {
     submitBtn.disabled = false;
-    submitBtn.innerHTML = '<span>✅ 确认并提交巡检记录</span>';
+    updateTeacherCard();
   }
 }
 
-function showSuccessModal(data) {
+function showSuccessModal(data, teacher) {
   const modal = document.getElementById('success-modal');
   document.getElementById('success-time').textContent = data.timestamp;
-  document.getElementById('success-user').textContent = data.userName;
+  document.getElementById('success-user').textContent = (data.userName || teacher.name) + ' 老师 (ID: ' + (teacher.userid || '') + ')';
   document.getElementById('success-record-id').textContent = data.recordId;
   document.getElementById('success-area-name').textContent = data.areaName;
   modal.classList.add('active');
@@ -316,9 +361,57 @@ function closeSuccessModal() {
   document.getElementById('success-modal').classList.remove('active');
 }
 
+// -------------------------------------------------------------
+// Switch Teacher Modal
+// -------------------------------------------------------------
+function openSwitchTeacherModal() {
+  const modal = document.getElementById('switch-teacher-modal');
+  const list = document.getElementById('staff-switch-list');
+  const staff = AppState.config.staff || [];
+  
+  list.innerHTML = staff.map(function(s) {
+    return '<div class="staff-switch-option" onclick="selectTeacher(\'' + s.userid + '\')">' +
+      '<div>' +
+        '<div style="font-weight:700; color:#222;">' + s.name + ' 老师</div>' +
+        '<div style="font-size:11px; color:#777;">' + (s.title || '教师') + ' · ' + (s.dept || '教学部') + '</div>' +
+      '</div>' +
+      '<div style="color:var(--primary); font-weight:700; font-size:12px;">选择并保持免登 →</div>' +
+    '</div>';
+  }).join('');
+
+  modal.classList.add('active');
+}
+
+function closeSwitchTeacherModal() {
+  document.getElementById('switch-teacher-modal').classList.remove('active');
+}
+
+function selectTeacher(userid) {
+  const found = (AppState.config.staff || []).find(function(s) { return s.userid === userid; });
+  if (found) {
+    AppState.currentTeacher = found;
+    saveTeacherSession(found, DEFAULT_EXPIRY_DAYS);
+    updateTeacherCard();
+    closeSwitchTeacherModal();
+    showToast('已切换为：' + found.name + ' 老师 (90天免登有效)');
+  }
+}
+
+function renderParentView() {
+  const container = document.getElementById('parent-pure-image-flow');
+  const area = AppState.area;
+  if (!container || !area) return;
+
+  if (area.detailImages && area.detailImages.length > 0) {
+    container.innerHTML = area.detailImages.map(function(imgUrl, idx) {
+      return '<img src="' + imgUrl + '" alt="' + area.name + ' 空间教育解读 ' + (idx + 1) + '" class="parent-pure-img" loading="' + (idx === 0 ? 'eager' : 'lazy') + '" />';
+    }).join('');
+  }
+}
+
 function setupEventListeners() {
-  document.getElementById('photo-input').addEventListener('change', handlePhotoCapture);
-  document.getElementById('submit-patrol-btn').addEventListener('click', submitPatrol);
+  const photoInput = document.getElementById('photo-input');
+  if (photoInput) photoInput.addEventListener('change', handlePhotoCapture);
 }
 
 function showToast(msg) {
