@@ -1,13 +1,12 @@
-/* DADDY HOME Environment Patrol & Education Web App */
-
 :root {
   --primary: #5c388d;
-  --primary-light: #f3ecf9;
-  --primary-hover: #4a2c75;
+  --primary-light: #f4eefb;
+  --primary-border: #dfd0ef;
+  --primary-hover: #482a72;
   --accent: #e5a823;
   --success: #16a34a;
   --success-light: #edfcf2;
-  --paper-bg: #f7f4ee;
+  --paper-bg: #f5f2eb;
   --paper-card: #ffffff;
   --paper-border: #e6dfd3;
   --text-main: #1f1f1f;
@@ -27,12 +26,13 @@
 
 body {
   font-family: var(--font-editorial);
-  background-color: #000000;
+  background-color: var(--paper-bg);
   color: var(--text-main);
-  line-height: 0;
+  line-height: 1.5;
   min-height: 100vh;
   margin: 0;
   padding: 0;
+  -webkit-font-smoothing: antialiased;
 }
 
 /* ============================================================ */
@@ -66,24 +66,18 @@ body {
 /* TEACHER PATROL WORKSPACE (DINGTALK MOBILE DEDICATED)         */
 /* ============================================================ */
 
-body.teacher-mode-body {
-  background-color: var(--paper-bg);
-  line-height: 1.5;
-  font-size: 14px;
-}
-
 .teacher-app-container {
-  max-width: 540px;
+  max-width: 500px;
   margin: 0 auto;
-  padding: 12px 14px 60px;
+  padding: 12px 14px 40px;
 }
 
-/* Header */
+/* Top Header */
 .teacher-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 4px 12px;
+  padding: 6px 2px 12px;
 }
 
 .brand-row {
@@ -93,23 +87,23 @@ body.teacher-mode-body {
 }
 
 .brand-icon {
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   background: var(--primary);
-  color: #fff;
-  border-radius: 6px;
+  color: #ffffff;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 800;
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .brand-title {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 800;
   color: var(--primary);
-  letter-spacing: 0.5px;
+  line-height: 1.2;
 }
 
 .brand-subtitle {
@@ -117,11 +111,24 @@ body.teacher-mode-body {
   color: var(--text-muted);
 }
 
-/* Teacher Identity Card */
-.teacher-id-card {
-  background: linear-gradient(135deg, #ffffff 0%, #faf6ff 100%);
-  border: 1px solid rgba(101, 64, 150, 0.2);
+.live-sync-pill {
+  font-size: 11px;
+  color: var(--success);
+  background: var(--success-light);
+  border: 1px solid rgba(22, 163, 74, 0.2);
+  padding: 3px 8px;
   border-radius: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* 1. Teacher Identity Card */
+.teacher-id-card {
+  background: #ffffff;
+  border: 1px solid var(--primary-border);
+  border-radius: 14px;
   padding: 14px 16px;
   margin-bottom: 12px;
   box-shadow: var(--shadow-sm);
@@ -141,7 +148,7 @@ body.teacher-mode-body {
   height: 44px;
   background: var(--primary-light);
   color: var(--primary);
-  border: 2px solid rgba(101, 64, 150, 0.25);
+  border: 2px solid var(--primary-border);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -149,6 +156,7 @@ body.teacher-mode-body {
   font-size: 20px;
   font-weight: 700;
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .teacher-avatar img {
@@ -163,13 +171,13 @@ body.teacher-mode-body {
   color: #1a1a1a;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
 }
 
 .teacher-meta-role {
   font-size: 12px;
   color: var(--text-muted);
-  margin-top: 2px;
+  margin-top: 1px;
 }
 
 .session-badge {
@@ -188,22 +196,22 @@ body.teacher-mode-body {
 
 .switch-teacher-btn {
   background: #ffffff;
-  border: 1px solid var(--paper-border);
+  border: 1px solid var(--primary-border);
   color: var(--primary);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
-  padding: 5px 10px;
+  padding: 6px 12px;
   border-radius: 8px;
   cursor: pointer;
   box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
-/* Area Hero Card */
+/* 2. Area Banner */
 .area-patrol-banner {
   background: #ffffff;
   border: 1px solid var(--paper-border);
-  border-radius: 12px;
-  padding: 14px 16px;
+  border-radius: 14px;
+  padding: 12px 16px;
   margin-bottom: 12px;
   box-shadow: var(--shadow-sm);
   display: flex;
@@ -227,10 +235,11 @@ body.teacher-mode-body {
   align-items: center;
   justify-content: center;
   font-size: 20px;
+  flex-shrink: 0;
 }
 
 .area-title-text {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 800;
   color: #222;
 }
@@ -246,17 +255,17 @@ body.teacher-mode-body {
   color: var(--primary);
   font-size: 12px;
   font-weight: 700;
-  padding: 4px 8px;
+  padding: 4px 10px;
   border-radius: 6px;
 }
 
-/* Form Container Card */
+/* 3. Form Section Card */
 .form-section-card {
   background: #ffffff;
   border: 1px solid var(--paper-border);
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 16px;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
   box-shadow: var(--shadow-sm);
 }
 
@@ -265,8 +274,8 @@ body.teacher-mode-body {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 12px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid #f0eae0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #f2ede4;
 }
 
 .form-header-title {
@@ -291,7 +300,6 @@ body.teacher-mode-body {
   align-items: center;
   gap: 4px;
   box-shadow: 0 2px 8px rgba(22, 163, 74, 0.25);
-  transition: transform 0.1s;
 }
 
 .quick-pass-btn:active {
@@ -309,24 +317,24 @@ body.teacher-mode-body {
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  padding: 10px 12px;
-  background: var(--paper-bg);
+  padding: 11px 12px;
+  background: #faf8f5;
   border: 1px solid var(--paper-border);
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .check-item-row.checked {
   background: var(--primary-light);
-  border-color: rgba(101, 64, 150, 0.35);
+  border-color: var(--primary-border);
 }
 
 .check-box-icon {
   width: 20px;
   height: 20px;
-  border: 2px solid #bbb;
-  border-radius: 4px;
+  border: 2px solid #b8af9f;
+  border-radius: 5px;
   margin-top: 1px;
   flex-shrink: 0;
   display: flex;
@@ -335,7 +343,7 @@ body.teacher-mode-body {
   font-size: 13px;
   font-weight: 800;
   color: transparent;
-  background: #fff;
+  background: #ffffff;
   transition: all 0.15s;
 }
 
@@ -347,7 +355,7 @@ body.teacher-mode-body {
 
 .check-text-content {
   font-size: 13px;
-  color: #333;
+  color: #333333;
   line-height: 1.45;
 }
 
@@ -360,16 +368,16 @@ body.teacher-mode-body {
 .photo-upload-area {
   border: 2px dashed #c9bfb0;
   border-radius: 10px;
-  padding: 14px;
+  padding: 16px 12px;
   text-align: center;
-  background: #fbf9f6;
+  background: #faf8f5;
   cursor: pointer;
   display: block;
-  transition: border-color 0.2s;
 }
 
 .photo-upload-area:active {
   border-color: var(--primary);
+  background: var(--primary-light);
 }
 
 .photo-grid-preview {
@@ -383,7 +391,7 @@ body.teacher-mode-body {
   position: relative;
   width: 68px;
   height: 68px;
-  border-radius: 6px;
+  border-radius: 8px;
   overflow: hidden;
   border: 1px solid var(--paper-border);
 }
@@ -418,7 +426,7 @@ body.teacher-mode-body {
 }
 
 .rating-card {
-  background: var(--paper-bg);
+  background: #faf8f5;
   padding: 8px 10px;
   border-radius: 8px;
   border: 1px solid var(--paper-border);
@@ -432,7 +440,7 @@ body.teacher-mode-body {
 
 .rating-stars-list {
   color: #f59e0b;
-  font-size: 16px;
+  font-size: 17px;
   margin-top: 2px;
   letter-spacing: 2px;
 }
@@ -446,7 +454,7 @@ body.teacher-mode-body {
   font-family: inherit;
   font-size: 13px;
   color: #222;
-  background: #fff;
+  background: #ffffff;
 }
 
 /* Submit Action Button */
@@ -465,7 +473,7 @@ body.teacher-mode-body {
   justify-content: center;
   gap: 8px;
   box-shadow: 0 4px 14px rgba(92, 56, 141, 0.3);
-  margin-top: 6px;
+  margin-top: 8px;
   transition: transform 0.1s, opacity 0.2s;
 }
 
@@ -478,7 +486,7 @@ body.teacher-mode-body {
   cursor: not-allowed;
 }
 
-/* Success Modal */
+/* Modal Overlay */
 .modal-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -496,17 +504,17 @@ body.teacher-mode-body {
 }
 
 .modal-dialog {
-  background: #fff;
+  background: #ffffff;
   border-radius: 16px;
-  max-width: 420px;
+  max-width: 400px;
   width: 100%;
   overflow: hidden;
-  box-shadow: 0 12px 36px rgba(0,0,0,0.2);
+  box-shadow: 0 12px 36px rgba(0,0,0,0.25);
   padding: 24px 20px;
   text-align: center;
 }
 
-/* Switch Teacher Modal */
+/* Staff Switch List */
 .staff-switch-modal-body {
   max-height: 320px;
   overflow-y: auto;
@@ -519,7 +527,7 @@ body.teacher-mode-body {
 
 .staff-switch-option {
   padding: 10px 12px;
-  background: var(--paper-bg);
+  background: #faf8f5;
   border: 1px solid var(--paper-border);
   border-radius: 8px;
   cursor: pointer;
