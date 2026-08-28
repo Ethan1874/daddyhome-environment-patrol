@@ -485,3 +485,60 @@ function showToast(msg) {
     toast.classList.remove('show');
   }, 2500);
 }
+
+
+function showDingTalkLoginPrompt() {
+  const modal = document.getElementById('login-prompt-modal');
+  if (modal) {
+    renderQuickStaffList('');
+    modal.classList.add('active');
+  }
+}
+
+function renderQuickStaffList(filterText) {
+  const container = document.getElementById('quick-login-staff-list');
+  if (!container) return;
+  const staff = AppState.config ? (AppState.config.staff || []) : [];
+  const keyword = (filterText || '').trim().toLowerCase();
+
+  const filtered = staff.filter(function(s) {
+    if (!keyword) return true;
+    return (s.name && s.name.toLowerCase().includes(keyword)) ||
+           (s.dept && s.dept.toLowerCase().includes(keyword)) ||
+           (s.title && s.title.toLowerCase().includes(keyword));
+  });
+
+  if (filtered.length === 0) {
+    container.innerHTML = '<div style="font-size:12px; color:#888; text-align:center; padding:16px;">未找到匹配教师</div>';
+    return;
+  }
+
+  container.innerHTML = filtered.map(function(s) {
+    return '<div class="staff-switch-option" onclick="quickLoginAsTeacher(\'' + s.userid + '\')" style="padding:8px 10px;">' +
+      '<div>' +
+        '<div style="font-weight:700; color:#222; font-size:13px;">' + s.name + ' <span style="font-size:11px; font-weight:normal; color:#666;">老师</span></div>' +
+        '<div style="font-size:11px; color:#888;">' + (s.dept || '教学部') + ' · ' + (s.title || '教师') + '</div>' +
+      '</div>' +
+      '<div style="color:var(--primary); font-weight:700; font-size:12px;">确认绑定 →</div>' +
+    '</div>';
+  }).join('');
+}
+
+function filterStaffList(text) {
+  renderQuickStaffList(text);
+}
+
+function quickLoginAsTeacher(userid) {
+  const found = (AppState.config.staff || []).find(function(s) { return s.userid === userid; });
+  if (found) {
+    AppState.currentTeacher = found;
+    saveTeacherSession(found, DEFAULT_EXPIRY_DAYS);
+    
+    const modal = document.getElementById('login-prompt-modal');
+    if (modal) modal.classList.remove('active');
+    
+    renderTeacherWorkspace();
+    setupEventListeners();
+    showToast('🎉 已成功绑定：' + found.name + ' 老师 (90天免登有效)');
+  }
+}

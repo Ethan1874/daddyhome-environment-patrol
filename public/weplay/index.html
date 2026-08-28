@@ -765,25 +765,36 @@ body {
 
   <script src="/app.js?v=20260828_1549"></script>
 
-  <!-- DingTalk Login Prompt Modal -->
+
+  <!-- DingTalk Login Prompt Modal with Instant Staff Search & OAuth -->
   <div id="login-prompt-modal" class="modal-overlay">
-    <div class="modal-dialog" style="max-width: 360px;">
-      <div style="font-size: 40px; margin-bottom: 8px;">🔐</div>
-      <h3 style="font-size: 17px; font-weight: 800; color: #1a1a1a; margin-bottom: 6px;">
-        钉钉巡检教师身份认证
+    <div class="modal-dialog" style="max-width: 380px; padding: 20px 16px;">
+      <div style="font-size: 36px; margin-bottom: 4px;">👩‍🏫</div>
+      <h3 style="font-size: 16px; font-weight: 800; color: #1a1a1a; margin-bottom: 4px;">
+        DADDY HOME 巡检责任人认证
       </h3>
-      <p style="font-size: 12px; color: #666; margin-bottom: 18px; line-height: 1.5;">
-        请授权您的钉钉身份，打卡记录将直接以您的姓名写入钉钉 AI 表格（90天超长免登）。
+      <p style="font-size: 12px; color: #666; margin-bottom: 12px; line-height: 1.4;">
+        选择或授权您的教师身份，打卡记录将直接以您的姓名写入钉钉 AI 表格（<strong>90天免登有效</strong>）。
       </p>
-      <button type="button" class="patrol-submit-btn" style="background: #007fff; margin-bottom: 10px;" onclick="triggerDingTalkOAuth()">
+
+      <!-- Search Input -->
+      <div style="margin-bottom: 8px;">
+        <input type="text" id="staff-search-input" class="form-input-box" placeholder="🔍 输入姓名快速查找教师 (如: 周士顶)..." oninput="filterStaffList(this.value)" style="padding: 8px 12px; font-size: 13px;">
+      </div>
+
+      <!-- Quick Staff List -->
+      <div class="staff-switch-modal-body" id="quick-login-staff-list" style="max-height: 220px; margin: 4px 0 12px;">
+        <!-- Dynamic staff items -->
+      </div>
+
+      <!-- DingTalk Native OAuth button -->
+      <button type="button" class="patrol-submit-btn" style="background: #007fff; padding: 10px 14px; font-size: 13px; margin-top: 0;" onclick="triggerDingTalkOAuth()">
         <span>🔵</span>
-        <span>钉钉一键授权免登</span>
-      </button>
-      <button type="button" class="switch-teacher-btn" style="width: 100%; padding: 10px;" onclick="openSwitchTeacherModal()">
-        👩‍🏫 从花名册选择我的教师身份
+        <span>钉钉原生授权登录 (需已配回调域名)</span>
       </button>
     </div>
   </div>
+
 
 </body>
 </html>
