@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>DADDY HOME 空间教育解读与巡检系统</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+  <!-- VIEW A: PURE LONG FLOW (PARENT VIEW - SUB-ROUTE DEDICATED DETAIL IMAGES) -->
+  <main id="parent-pure-image-flow">
+    <!-- Dynamically populated per sub-route (e.g. /life-farm gets the 4 pure images) -->
+  </main>
+
+  <!-- VIEW B: TEACHER PATROL WORKSPACE (SHOWN ONLY IN DINGTALK / INTERNAL DOMAIN) -->
+  <div id="teacher-workspace" style="display: none;">
+    
+    <header class="app-header">
+      <div class="brand-badge">
+        <div class="brand-logo-icon">M</div>
+        <div class="brand-titles">
+          <span class="brand-main-title">DADDY HOME</span>
+          <span class="brand-sub-title" id="header-area-subtitle">钉钉巡检工作台</span>
+        </div>
+      </div>
+      <div id="teacher-name-badge" style="background: var(--primary-light); color: var(--primary); font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 12px;">
+        👩‍🏫 负责老师
+      </div>
+    </header>
+
+    <main class="app-container">
+      <div class="form-card">
+        
+        <div class="form-header-row">
+          <div class="form-section-title">
+            <span>📝</span>
+            <span id="teacher-area-title">巡检标准核验</span>
+          </div>
+          <button type="button" class="quick-select-all-btn" onclick="selectAllCheckItems()">
+            <span>⚡</span>
+            <span>一键全部合格</span>
+          </button>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label">负责老师</label>
+            <select id="staff-select" class="form-select"></select>
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label">巡检类型</label>
+            <select id="patrol-type-select" class="form-select">
+              <option value="每日巡检">每日巡检</option>
+              <option value="每周巡检">每周巡检</option>
+              <option value="专项安全排查">专项安全排查</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 14px;">
+          <label class="form-label">执行标准项（点击确认）</label>
+          <div class="checklist" id="patrol-checklist"></div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">现场拍照 / 上传图片 (可选)</label>
+          <label for="photo-input" class="photo-uploader-box">
+            <div style="font-size: 24px; margin-bottom: 4px;">📷</div>
+            <div style="font-size: 13px; font-weight: 600; color: #444;">点击拍摄或从相册选择</div>
+            <div style="font-size: 11px; color: #888;">支持一键上传环境现场照片</div>
+            <input type="file" id="photo-input" accept="image/*" capture="environment" multiple style="display: none;">
+          </label>
+          <div class="photo-previews" id="photo-previews"></div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">四维执行评分 (默认满星)</label>
+          <div class="ratings-grid">
+            <div class="rating-box">
+              <div class="rating-label">🛡️ 安全维度</div>
+              <div class="stars-row" id="stars-safety"></div>
+            </div>
+            <div class="rating-box">
+              <div class="rating-label">🧹 环境卫生</div>
+              <div class="stars-row" id="stars-hygiene"></div>
+            </div>
+            <div class="rating-box">
+              <div class="rating-label">📦 设备物资</div>
+              <div class="stars-row" id="stars-supplies"></div>
+            </div>
+            <div class="rating-box">
+              <div class="rating-label">🌟 家园体验</div>
+              <div class="stars-row" id="stars-experience"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">巡检备注 (可选)</label>
+          <textarea id="patrol-remarks" class="form-textarea" rows="2" placeholder="输入特殊情况或需补充说明..."></textarea>
+        </div>
+
+        <button type="button" id="submit-patrol-btn" class="submit-btn">
+          <span>✅</span>
+          <span>确认并提交巡检记录</span>
+        </button>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Success Modal -->
+  <div id="success-modal" class="modal-overlay">
+    <div class="modal-dialog" style="max-width: 360px; text-align: center; padding: 24px;">
+      <div style="font-size: 44px; margin-bottom: 8px;">🎉</div>
+      <h3 style="font-size: 17px; font-weight: 800; color: #065f46; margin-bottom: 8px;">巡检打卡已成功写入！</h3>
+      <p style="font-size: 13px; color: #444; margin-bottom: 14px;">
+        系统已自动在钉钉 AI 表格【<strong id="success-area-name">生命场</strong>】中增加一条合规巡检记录。
+      </p>
+      <div style="background: #faf8f5; border: 1px solid #e0d8ca; border-radius: 8px; padding: 10px; font-size: 12px; color: #555; margin-bottom: 18px; text-align: left;">
+        <div>🕒 打卡时间: <span id="success-time" style="color: #222; font-weight: 600;"></span></div>
+        <div>👤 负责老师: <span id="success-user" style="color: #222; font-weight: 600;"></span></div>
+        <div>🆔 钉钉记录ID: <span id="success-record-id" style="font-family: var(--font-mono); color: #654096;"></span></div>
+      </div>
+      <button type="button" class="submit-btn" style="margin-bottom: 0;" onclick="closeSuccessModal()">
+        完成
+      </button>
+    </div>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
