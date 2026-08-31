@@ -1,25 +1,16 @@
-// Cloudflare Pages Functions - Comprehensive DingTalk OAuth2 & JSAPI Auth
-const staffList = [
-  {"userid": "015018644521509971", "name": "周士顶", "title": "数字化运营 / 负责人", "dept": "管理部", "mobile": "18600000000"},
-  {"userid": "673238123712613149", "name": "沈宏", "title": "主班教师", "dept": "教学部"},
-  {"userid": "08082643501064366", "name": "小七老师", "title": "主教老师", "dept": "教学部"},
-  {"userid": "010313133827407005", "name": "韩小霞", "title": "保育教师", "dept": "保育部"},
-  {"userid": "1517031804791350", "name": "朱老师", "title": "主班教师", "dept": "教学部"},
-  {"userid": "180902506824103197", "name": "王老师", "title": "配班教师", "dept": "教学部"},
-  {"userid": "0142385317762744", "name": "赵老师", "title": "安全督导", "dept": "安全后勤"}
-];
-
-function jsonResponse(data, status = 200) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: {
-      "Content-Type": "application/json; charset=utf-8",
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type, Authorization",
-    },
-  });
-}
+// Cloudflare Pages Functions - DingTalk OAuth2 & JSAPI Auth
+import staffList from "../data/staff_list.json";
+import {
+  contentLengthExceeds,
+  getSessionSecret,
+  isSameOriginRequest,
+  issueSessionToken,
+  jsonResponse,
+  readJsonBody,
+  RequestBodyError,
+  sanitizeUser,
+  secretsMatch,
+} from "../_lib/security.js";
 
 async function getDingTalkAppToken(appKey, appSecret) {
   const url = "https://api.dingtalk.com/v1.0/oauth2/accessToken";
@@ -28,8 +19,8 @@ async function getDingTalkAppToken(appKey, appSecret) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ appKey, appSecret }),
   });
-  const data = await resp.json();
-  if (data && data.accessToken) {
+  const data = await resp.json().catch(() => ({}));
+  if (resp.ok && data && data.accessToken) {
     return data.accessToken;
   }
   throw new Error(`DingTalk app token fetch failed: ${JSON.stringify(data)}`);
@@ -39,14 +30,28 @@ export async function onRequest(context) {
   const { request, env } = context;
   if (request.method === "OPTIONS") return jsonResponse(null, 204);
   if (request.method !== "POST") return jsonResponse({ error: "Method Not Allowed" }, 405);
+  if (!isSameOriginRequest(request)) return jsonResponse({ error: "Forbidden origin" }, 403);
+  if (contentLengthExceeds(request, 16 * 1024)) return jsonResponse({ error: "Request too large" }, 413);
 
   try {
-    const body = await request.json();
+    const body = await readJsonBody(request, 16 * 1024);
+    if (!body || typeof body !== "object" || Array.isArray(body)) {
+      return jsonResponse({ error: "请求数据格式无效" }, 400);
+    }
     const authCode = String(body.authCode || body.code || "").trim();
     const manualUserId = String(body.userId || "").trim();
+    const manualPasscode = String(body.passcode || "");
 
-    const DINGTALK_APP_KEY = env.DINGTALK_APP_KEY || "dingh5hmtyjgs4klkcdu";
-    const DINGTALK_APP_SECRET = env.DINGTALK_APP_SECRET || "SDheeIfdPDzoLHUFbi9EXlOh3WzPeGcWoyF2OsCeW44Z84rKxCe9-YNnthJRtMfM";
+    const DINGTALK_APP_KEY = String(env.DINGTALK_APP_KEY || "").trim();
+    const DINGTALK_APP_SECRET = String(env.DINGTALK_APP_SECRET || "").trim();
+    const sessionSecret = getSessionSecret(env);
+
+    if (!sessionSecret) {
+      return jsonResponse({ error: "服务端会话密钥未配置" }, 503);
+    }
+    if (authCode && (!DINGTALK_APP_KEY || !DINGTALK_APP_SECRET)) {
+      return jsonResponse({ error: "钉钉应用凭据未配置" }, 503);
+    }
 
     let authenticatedUser = null;
 
@@ -64,9 +69,9 @@ export async function onRequest(context) {
             grantType: "authorization_code"
           })
         });
-        const userTokenData = await userTokenResp.json();
+        const userTokenData = await userTokenResp.json().catch(() => ({}));
         
-        if (userTokenData && userTokenData.accessToken) {
+        if (userTokenResp.ok && userTokenData && userTokenData.accessToken) {
           const userAccessToken = userTokenData.accessToken;
           const unionId = userTokenData.unionId;
           
@@ -78,16 +83,16 @@ export async function onRequest(context) {
               "x-acs-dingtalk-access-token": userAccessToken
             }
           });
-          const userMeData = await userMeResp.json();
+          const userMeData = await userMeResp.json().catch(() => ({}));
+          if (!userMeResp.ok) throw new Error(`DingTalk profile lookup failed with HTTP ${userMeResp.status}`);
           
           const userName = userMeData.nick || userMeData.name || "老师";
           const userAvatar = userMeData.avatarUrl || "";
-          const userMobile = userMeData.mobile || "";
-          const userOpenId = userMeData.openId || "";
 
           // Resolve corporate userId by unionid if possible
-          let corporateUserId = userTokenData.corpId ? null : null;
+          let corporateUserId = null;
           try {
+            if (!unionId) throw new Error("DingTalk user token returned no unionId");
             const appToken = await getDingTalkAppToken(DINGTALK_APP_KEY, DINGTALK_APP_SECRET);
             const byUnionResp = await fetch(`https://oapi.dingtalk.com/topapi/user/getbyunionid?access_token=${appToken}`, {
               method: "POST",
@@ -105,20 +110,17 @@ export async function onRequest(context) {
           // Match in staff list
           const matched = staffList.find(s => 
             (corporateUserId && s.userid === corporateUserId) ||
-            (s.unionid && s.unionid === unionId) ||
-            (userMobile && s.mobile === userMobile) ||
-            (s.name === userName)
+            (s.unionid && s.unionid === unionId)
           );
 
-          authenticatedUser = {
-            userid: corporateUserId || (matched ? matched.userid : "015018644521509971"),
-            name: userName,
-            avatar: userAvatar,
-            title: matched ? matched.title : "巡检教师",
-            dept: matched ? matched.dept : "托育教学部",
-            unionid: unionId,
-            openId: userOpenId
-          };
+          if (matched) {
+            authenticatedUser = sanitizeUser({
+              ...matched,
+              userid: matched.userid,
+              name: matched.name || userName,
+              avatar: userAvatar,
+            });
+          }
         }
       } catch (err) {
         console.error("DingTalk v1.0 userAccessToken failed:", err);
@@ -137,17 +139,17 @@ export async function onRequest(context) {
             }
           );
           const res = await dtResp.json();
-          if (res.errcode === 0 && res.result) {
+          if (dtResp.ok && res.errcode === 0 && res.result) {
             const { userid, name, unionid, avatar, title } = res.result;
             const matched = staffList.find(s => s.userid === userid || (unionid && s.unionid === unionid));
-            authenticatedUser = {
-              userid: userid,
-              name: name || (matched ? matched.name : "老师"),
-              avatar: avatar || "",
-              title: title || (matched ? matched.title : "巡检教师"),
-              dept: matched ? matched.dept : "托育教学部",
-              unionid: unionid || ""
-            };
+            if (matched) {
+              authenticatedUser = sanitizeUser({
+                ...matched,
+                name: matched.name || name,
+                avatar: avatar || "",
+                title: matched.title || title,
+              });
+            }
           }
         } catch (err) {
           console.error("DingTalk TopAPI getuserinfo failed:", err);
@@ -157,15 +159,13 @@ export async function onRequest(context) {
 
     // 2. Manual User ID selection (for testing / manual switch)
     if (!authenticatedUser && manualUserId) {
+      const manualLoginAllowed = await secretsMatch(manualPasscode, env.TEACHER_PASSCODE);
+      if (!manualLoginAllowed) {
+        return jsonResponse({ error: "教师名录访问口令无效" }, 401);
+      }
       const found = staffList.find(s => s.userid === manualUserId);
       if (found) {
-        authenticatedUser = {
-          userid: found.userid,
-          name: found.name,
-          title: found.title || "主班教师",
-          dept: found.dept || "托育教学部",
-          avatar: found.avatar || ""
-        };
+        authenticatedUser = sanitizeUser(found);
       }
     }
 
@@ -175,29 +175,25 @@ export async function onRequest(context) {
         success: false,
         authenticated: false,
         error: "未获取到钉钉授权身份，请点击授权登录",
-        authUrl: `https://login.dingtalk.com/oauth2/auth?client_id=${DINGTALK_APP_KEY}&response_type=code&scope=openid%20corpid&state=patrol&prompt=consent`
+        authUrl: DINGTALK_APP_KEY
+          ? `https://login.dingtalk.com/oauth2/auth?client_id=${encodeURIComponent(DINGTALK_APP_KEY)}&response_type=code&scope=openid%20corpid&prompt=consent`
+          : null
       }, 401);
     }
 
-    // 90 Days Long-Lived Session
-    const now = Date.now();
-    const expiresInDays = 90;
-    const expiresAt = now + expiresInDays * 24 * 3600 * 1000;
-    const sessionToken = "dh_sess_" + Math.random().toString(36).substring(2, 12) + "_" + Date.now().toString(36);
+    const session = await issueSessionToken(authenticatedUser, sessionSecret, 90);
 
     return jsonResponse({
       success: true,
       authenticated: true,
       isTeacher: true,
-      user: authenticatedUser,
-      session: {
-        token: sessionToken,
-        expiresAt: expiresAt,
-        expiresInDays: expiresInDays
-      },
+      user: sanitizeUser(authenticatedUser),
+      session,
       message: `欢迎回来，${authenticatedUser.name} 老师！已开启90天免登打卡。`,
     });
   } catch (e) {
-    return jsonResponse({ error: e.message }, 500);
+    if (e instanceof RequestBodyError) return jsonResponse({ error: e.message }, e.status);
+    console.error("DingTalk login failed:", e);
+    return jsonResponse({ error: "教师身份认证失败，请稍后重试" }, 500);
   }
 }

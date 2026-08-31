@@ -67,16 +67,24 @@
 
 ## 4. 关键配置与凭证清单 (Credentials)
 
-> **⚠️ 注意**：以下凭据已内置于后端接口，接手后如需更换企业应用，可在 `functions/api/` 或 Cloudflare 环境变量中更新：
+> **⚠️ 安全要求**：源码不保存任何密钥。下列敏感项必须通过 Cloudflare Pages 的 Secrets/Bindings 配置；本地仅放在已被 `.gitignore` 排除的 `.env` 中。
 
 | 配置项 | 参数值 | 说明 |
 | :--- | :--- | :--- |
 | **钉钉 AppKey** | `dingh5hmtyjgs4klkcdu` | 钉钉开放平台企业内部应用 AppKey |
-| **钉钉 AppSecret** | `SDheeIfdPDzoLHUFbi9EXlOh3WzPeGcWoyF2OsCeW44Z84rKxCe9-YNnthJRtMfM` | 钉钉应用通信凭证 |
+| **钉钉 AppSecret** | `DINGTALK_APP_SECRET`（Secret） | 钉钉应用通信凭证；旧值曾进入版本库，必须轮换后再发布 |
 | **钉钉 CorpId** | `dingfdcd647054eb40beee0f45d8e4f7c288` | 上海杨浦睿福托育有限公司企业 ID |
 | **操作人 OperatorId** | `cDq12jDIWcGFnUugiSe4fQAiEiE` | 钉钉 Notable AI 表格操作员 ID |
 | **Notable BaseId** | `dpYLaezmVNL9GkK1u4YgEkAA8rMqPxX6` | 巡检多维数据表母表 BaseId |
 | **生命场 SheetId** | `2tr0bHx` | 生命场子表唯一 ID |
+
+生产环境还必须配置：
+
+| 配置项 | 类型 | 用途 |
+| :--- | :--- | :--- |
+| `PATROL_SESSION_SECRET` | Secret | 对 90 天教师会话做 HMAC 签名，建议使用独立高熵随机值 |
+| `TEACHER_PASSCODE` | Secret | 浏览器手动载入教师名录及人工切换身份；不得写回 JSON 配置 |
+| `PATROL_UPLOADS` | R2 Bucket Binding | 持久化现场照片，单张最大 2MB、每次最多 5 张 |
 
 ---
 
@@ -85,9 +93,11 @@
 ```text
 campus-environment-patrol/
 ├── HANDOVER.md                                # 本交接手册
+├── .env.example                               # 本地环境变量模板（不含真实密钥）
 ├── server.py                                  # 本地调试用轻量 HTTP Server
 │
 ├── functions/                                 # 后端 Serverless 接口 (Cloudflare Pages)
+│   ├── _lib/security.js                       # 会话签名、验签、恒时口令比较与安全响应
 │   ├── api/
 │   │   ├── dingtalk-login.js                  # 钉钉 OAuth2 / JSAPI 免登与 Token 签发
 │   │   ├── checkin.js                         # 巡检打卡直写钉钉 Notable AI 表格
@@ -101,7 +111,8 @@ campus-environment-patrol/
 ├── public/                                    # 前端静态发布目录 (Cloudflare Pages Root)
 │   ├── index.html                             # 核心 SPA 入口 (内嵌完整 CSS 样式)
 │   ├── 404.html                               # SPA 路由重定向兜底
-│   ├── _redirects                             # 路由重写规则 (/api/* 与 SPA 规则)
+│   ├── _headers                                # 静态资源安全响应头
+│   ├── _redirects                             # 路由说明（各子路径使用物理 index）
 │   ├── app.js                                 # 核心业务逻辑 (鉴权、免登、打卡、路由)
 │   ├── style.css                              # 独立样式表
 │   ├── print-qrcodes.html                     # 园区 9 大空间二维码批量生成与打印工具
@@ -144,15 +155,22 @@ campus-environment-patrol/
 
 ### 6.2 教师端（90 天免登与身份自动锁定）
 1. **免登持久化逻辑**：
-   * 首次识别老师身份后，在客户端 `localStorage` 写入带 90 天有效期的 `dh_patrol_teacher_session_v2`；
-   * 老师在 90 天内再次扫码，系统读取缓存并立即带入身份，**零感知直接进入打卡页面**；
+   * 首次识别老师身份后，由后端签发带 HMAC 签名和 90 天有效期的会话令牌，再写入客户端 `localStorage` 的 `dh_patrol_teacher_session_v2`；
+   * 老师在 90 天内再次扫码，前端仍需由 `/api/config` 验签成功后才恢复身份；伪造或过期缓存会被清除；
 2. **多通道认证方式**：
-   * **通道 A（名录即时搜索）**：弹窗内置 48 位在册教职工名录与实时拼音/汉字模糊搜索，点击名字即可 1 秒完成绑定；
+   * **通道 A（名录即时搜索）**：输入服务端配置的教师名录访问口令后，接口只返回必要的姓名、职位和 `userId`，再选择本人完成绑定；公开配置不再下发完整名录、`unionId` 或内部字段；
    * **通道 B（钉钉原生 OAuth）**：支持钉钉官方授权许可登录（需在钉钉后台配置回调域名）；
    * **随时换班**：工作台顶部常驻「切换身份」按钮，方便多位老师共用设备打卡。
 3. **打卡记录直写钉钉 AI 表格**：
-   * 提交打卡时，将当前老师的真实 `userId` 注入 payload 中的 `"人员": [{ "userId": "..." }]` 字段；
-   * 写入成功后返回 Notable AI 表格的真实记录流水号（`recordId`）。
+   * 提交打卡时，后端只采用验签会话中的 `userId`，忽略客户端自报身份；区域、检查项、评分、备注和照片凭据均需通过白名单与长度校验；
+   * 只有钉钉接口返回成功状态且带真实 `recordId` 时才向前端报告完成；错误响应或缺少流水号均按失败处理。
+
+### 6.3 现场照片持久化
+
+* 浏览器先压缩图片，再以已认证会话调用 `/api/upload`；
+* Functions 校验请求大小、MIME、文件魔数和教师会话后写入 `PATROL_UPLOADS` R2；
+* `/api/checkin` 只接受服务端签发的 R2 对象引用，不再接收或回显任意 Base64/外部 URL；
+* 未配置 R2 Binding 时，无照片巡检仍可使用；选择了照片则明确失败，不会把“仅统计张数”误报为已保存凭据。
 
 ---
 
@@ -165,13 +183,29 @@ python3 server.py
 # 访问本地页面: http://localhost:8000/life-farm
 ```
 
-### 7.2 更新长图切片操作步骤 (以生命场为例)
+本地服务默认仅监听 `127.0.0.1`，只读取项目根目录 `.env`，不会再加载其他项目的凭据，也不会关闭 TLS 证书校验。
+
+### 7.2 安全回归与 Functions 编译
+
+```bash
+# 无外部写入的 Python 回归测试
+python3 -m unittest -v scripts.test_system
+
+# 使用当前 Cloudflare Pages Functions 运行时编译
+npx wrangler@latest pages functions build functions \
+  --compatibility-date 2026-08-29 \
+  --compatibility-flags nodejs_compat
+```
+
+`scripts/test_pages_security.mjs` 用于连接本地 Wrangler Pages 服务，覆盖公开配置、跨域、口令、签名会话、R2 上传及写入前参数拒绝。测试必须使用测试专用绑定，不能填入生产钉钉凭据。
+
+### 7.3 更新长图切片操作步骤 (以生命场为例)
 1. 将新导出的切片图片放入 `/Users/ethan/Downloads/生命场`；
 2. 执行更新与压缩脚本（保持宽度 1242px，格式化为 WebP/JPG）；
 3. 将图片输出至 `public/assets/life_farm_v2/` 并更新版本时间戳；
 4. 执行发布命令。
 
-### 7.3 部署到生产环境 (Cloudflare Pages)
+### 7.4 部署到生产环境 (Cloudflare Pages)
 ```bash
 cd /Users/ethan/.gemini/antigravity/scratch/campus-environment-patrol
 
@@ -183,6 +217,8 @@ git push origin main
 # 2. 一键发布到 Cloudflare Pages
 npx wrangler pages deploy public --project-name daddyhome-environment-patrol --branch main
 ```
+
+发布前必须先在 Cloudflare Pages 项目设置中确认三个 Secrets（`DINGTALK_APP_SECRET`、`PATROL_SESSION_SECRET`、`TEACHER_PASSCODE`）、非敏感配置和 `PATROL_UPLOADS` R2 Binding 均存在。缺任一必要配置时，接口会明确失败，不会回退到源码默认值。
 
 ---
 

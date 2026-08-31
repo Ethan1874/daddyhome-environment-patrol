@@ -161,20 +161,29 @@
       }
     });
 
+    function escapeHtml(value) {
+      return String(value == null ? '' : value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
     function renderBadges(areas) {
       const grid = document.getElementById('badges-grid');
       const origin = window.location.origin;
 
       grid.innerHTML = areas.map(function(area, idx) {
         const tagsHtml = (area.tags || []).map(function(t) {
-          return '<span class="badge-tag-pill">[ ' + t + ' ]</span>';
+          return '<span class="badge-tag-pill">[ ' + escapeHtml(t) + ' ]</span>';
         }).join('');
 
-        const noteText = area.handwrittenNote || '「让孩子在真实环境中建构独立与专注」';
-        const doodleIcon = area.doodle || area.icon || '🏫';
+        const noteText = escapeHtml(area.handwrittenNote || '「让孩子在真实环境中建构独立与专注」');
+        const doodleIcon = escapeHtml(area.doodle || area.icon || '🏫');
         const serialNo = 'ZONE · 0' + (idx + 1);
 
-        return '<div class="qr-badge-card" id="card-' + area.id + '">' +
+        return '<div class="qr-badge-card" id="card-' + escapeHtml(area.id) + '">' +
           '<!-- Top Washi Tape -->' +
           '<div class="washi-tape-top"></div>' +
 
@@ -187,8 +196,8 @@
           '<!-- Space Main Title & Doodle Icon -->' +
           '<div class="badge-main-header" style="width: 100%;">' +
             '<div class="badge-title-group" style="text-align: left;">' +
-              '<div class="badge-title-cn">' + area.name + '</div>' +
-              '<div class="badge-title-en">' + area.enName + ' · ' + area.shortCode + '</div>' +
+            '<div class="badge-title-cn">' + escapeHtml(area.name) + '</div>' +
+              '<div class="badge-title-en">' + escapeHtml(area.enName) + ' · ' + escapeHtml(area.shortCode) + '</div>' +
             '</div>' +
             '<div class="badge-doodle-icon">' + doodleIcon + '</div>' +
           '</div>' +
@@ -229,7 +238,7 @@
 
           '<!-- Archival Footer Code -->' +
           '<div class="badge-footer-code" style="font-family: var(--font-mono); font-size: 9px; color: #a8a29e; margin-top: 8px;">' +
-            'ID: ' + area.sheetId + ' · CODE: ' + area.shortCode + ' · DINGTALK AI-TABLE' +
+            'ID: ' + escapeHtml(area.id) + ' · CODE: ' + escapeHtml(area.shortCode) + ' · DINGTALK AI-TABLE' +
           '</div>' +
         '</div>';
       }).join('');

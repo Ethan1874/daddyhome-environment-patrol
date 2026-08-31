@@ -1,17 +1,27 @@
-// Auto-generated Cloudflare Pages Function
-const areasConfig = {"baseId": "dpYLaezmVNL9GkK1u4YgEkAA8rMqPxX6", "corpId": "dingfdcd647054eb40beee0f45d8e4f7c288", "campusName": "DADDY HOME 蒙特梭利托育中心", "areas": [{"id": "2tr0bHx", "name": "生命场（西院）", "enName": "LIFE FARM", "shortCode": "COURT-W-LF", "tags": ["生命", "责任", "观察"], "icon": "🐑", "color": "#3B7A57", "accentColor": "#f1c834", "sheetId": "2tr0bHx", "image": "https://images.unsplash.com/photo-1500595046743-cd271d694d30?auto=format&fit=crop&w=800&q=80", "educationIntro": "泥土、植物与小动物是最好的自然导师。生命场让城市里的孩子双脚踩在真实的土地上。喂养小羊、孔雀、鸡鸭，观察植物从播种到结果的完整周期，让孩子亲身体验“生命的脆弱与生生不息”。孩子们在日常照料中学习对另一个生命的尊重与责任，从被照顾者成长为有能力的照料者。", "montessoriPrinciples": [{"title": "双脚踩在泥土里的生命教育", "desc": "接触真实土壤、昆虫与绿植，建立人与自然的深层联结，滋养孩子的感官敏锐度。"}, {"title": "从被照顾到照护生命", "desc": "每日定时喂食、加水、清理草料，培养坚持不懈的责任心与温柔呵护的同理心。"}, {"title": "循环生态与自然法则", "desc": "落叶归根、堆肥滋养蔬菜，在亲身劳作中理解自然的因果规律与生态循环。"}], "checkItems": ["动物状态：小羊、孔雀、鸽子、鸡鸭精神活跃，无外伤或异常", "食物与饮水：饲料新鲜无霉变，饮水清洁，食槽/水槽无污垢", "活动环境：地面无粪便堆积，栏舍清洁，无异味", "农具收纳：工具归位，避免随地放置，防止儿童接触", "动物食物收纳：饲料桶加盖，存放干燥通风，无鼠虫", "土地管理：花草无明显折断、倒伏或垃圾覆盖。树枝不低垂影响通行，花盆、护栏摆放稳固，避免绊倒。浇水适度，地面不积水。无裸露坑洼、无荒废角落，保持整体完整。"], "weeklyCheckItems": ["整体安全评级：是否存在高风险器材（需封闭或更换）", "功能性评估：活动动线是否合理，设施使用率是否平衡", "绿化养护：季节性修剪、防虫；是否需调整绿植分布", "儿童体验：孩子是否积极参与，家长反馈是否正面"], "fieldMap": {"title": "01ZM8y7", "items": "mHe1U1b", "user": "9XFXz5d", "date": "mKUEya0", "photos": "S25BNzT", "remarks": "AnxFawz", "confirm": "9WygHUY", "patrolType": "tSzctOu", "rating_safety": "SmLXq65", "rating_hygiene": "GpFh9J8", "rating_supplies": "wG2LJla", "rating_experience": "Pp1ZcHj", "weekly_items": "9oYkyrD"}, "handwrittenNote": "「双脚踩在泥土里，从被照顾者成长为生命的照料者」", "doodle": "🐑", "detailImages": ["/assets/life_farm_v2/p1.jpg?v=1787903985", "/assets/life_farm_v2/p2.jpg?v=1787903985", "/assets/life_farm_v2/p3.jpg?v=1787903985", "/assets/life_farm_v2/p4.jpg?v=1787903985", "/assets/life_farm_v2/p5.jpg?v=1787903985", "/assets/life_farm_v2/p6.jpg?v=1787903985", "/assets/life_farm_v2/p7.jpg?v=1787903985", "/assets/life_farm_v2/p8.jpg?v=1787903985"], "slug": "life-farm", "aliases": ["life-farm", "lifefarm", "2tr0bHx", "court-w-lf"]}, {"id": "MA34iZG", "name": "园所大厅", "enName": "Family Hub & Welcome Hall", "shortCode": "AREA-CLH", "tags": ["秩序", "温馨", "连接"], "icon": "🏛️", "color": "#654096", "accentColor": "#f1c834", "sheetId": "MA34iZG", "image": "https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&w=800&q=80", "educationIntro": "园所大厅是孩子从家庭生活过渡到园区自主生活的第一道“心理缓冲带”。开放式的家庭角与温润木质空间，帮助孩子缓解分离焦虑，建立安全感与归属感。小动物微生态角为孩子提供观察生命规律的日常窗口，培养初期的责任感与关爱心。自助茶水吧台鼓励幼儿在成人适度支持下感知生活自理与社交礼仪。", "montessoriPrinciples": [{"title": "温馨过渡与归属感创设", "desc": "以大地色系与天然木质家具打造类家庭环境，降低新入园儿童的陌生感与焦虑感。"}, {"title": "真实生命观察窗口", "desc": "设置金鱼与小型饲养观察箱，引导儿童静心观察生命作息，激发探索自然的兴趣。"}, {"title": "自律自主的环境秩序", "desc": "沙发靠垫、绘本展示架均符合幼儿人体工学与视线高度，用完自发归位，内化秩序感。"}], "checkItems": ["家庭角（物品摆放整齐，无杂乱堆放）", "沙发与地毯（无灰尘、食物残渣；靠垫整齐）", "绿植养护（叶片无枯黄，浇水适度，吊挂植物稳固）", "小动物（蜥蜴、金鱼）：活动正常，水质清澈，饲料新鲜", "茶水吧台（饮水机/茶具整洁，台面无积水）", "走道地面：无水渍、无障碍，保持防滑"], "weeklyCheckItems": ["家庭角：检查玩具/物品是否损坏", "沙发与地毯：用吸尘器深度清洁一次", "绿植：修剪枝叶，检查是否有虫害，水分充足", "小动物：鱼缸/饲养箱是否需要部分换水", "茶水吧台：饮水机/电器是否需除垢，补充耗材", "打印机：检查是否卡纸、缺墨", "书架/展示架：整理书籍顺序，检查破损书本", "主题桌：是否需要更换主题布置", "接待台/公告区：更新信息内容，整理展示物料"], "fieldMap": {"title": "01ZM8y7", "items": "mHe1U1b", "user": "9XFXz5d", "date": "mKUEya0", "photos": "S25BNzT", "remarks": "AnxFawz", "confirm": "9WygHUY", "patrolType": "tSzctOu", "rating_safety": "SmLXq65", "rating_hygiene": "GpFh9J8", "rating_supplies": "wG2LJla", "rating_experience": "Pp1ZcHj", "weekly_items": "9oYkyrD"}, "handwrittenNote": "「从家庭过渡到园所的第一道温柔缓冲带」", "doodle": "🏡", "slug": "hall", "aliases": ["hall", "MA34iZG", "welcome-hall", "clh"]}, {"id": "ge6m9XC", "name": "木工教室", "enName": "CREATIVE LAB / Woodwork Atelier", "shortCode": "R-CL", "tags": ["创造", "建构", "探索"], "icon": "🔨", "color": "#8B5A2B", "accentColor": "#f1c834", "sheetId": "ge6m9XC", "image": "https://images.unsplash.com/photo-1581783342308-f792dbdd27c5?auto=format&fit=crop&w=800&q=80", "educationIntro": "真实的工具与真实的木材，赋予儿童沉浸式的“工匠精神”与实体建构体验。蒙特梭利教育强调“真实物体比玩具更能引发深度专注”。通过在严格安全规程下使用专为儿童设计的木工工具，锻炼儿童的手眼协调、立体空间感知与自我风险控制意识。工具的一一对应挂板与归位收纳，内化儿童的物理空间秩序感与做事有始有终的意志品质。", "montessoriPrinciples": [{"title": "真实性与内在专注", "desc": "提供真实的松木、砂纸与安全锯，让孩子在真实的阻力与质感中感知物理规律，激发深层专注。"}, {"title": "风险评估与自我保护", "desc": "佩戴护目镜、规范握持工具，让孩子在成人守护下学习安全边界，建立谨慎负责的行为习惯。"}, {"title": "工匠意志与完整闭环", "desc": "从选料、打磨、组装到工具归位、桌面清扫，完整经历创作全周期，体验建构的成就感。"}], "checkItems": ["工具归位（锯、锤、钻、电动工具等收纳在指定位置，幼儿不可随意触碰）", "危险品管理（刀具、钉子、螺丝等存放在封闭容器内）", "电源安全（电动工具电源关闭，无裸露电线）", "工作台面（无木屑、钉子残留，保持干净平整）", "防护用品（护目镜、手套齐备、清洁）", "地面环境（无木屑、杂物，通道畅通，防滑）", "设备清洁（电锯等常用设备表面无尘土污渍）"], "weeklyCheckItems": ["安全等级评估：是否存在反复出现的隐患（电线、工具、地面）", "设备更新：是否需要淘汰旧工具、添置新设备", "培训复盘：教师是否接受最新安全培训，儿童使用规程是否更新", "资源配置：防护用品、材料供应是否合理", "体验与教育价值：孩子是否在安全前提下积极参与，有无改进空间"], "fieldMap": {"title": "01ZM8y7", "items": "mHe1U1b", "user": "9XFXz5d", "date": "mKUEya0", "photos": "S25BNzT", "remarks": "AnxFawz", "confirm": "9WygHUY", "patrolType": "tSzctOu", "rating_safety": "SmLXq65", "rating_hygiene": "GpFh9J8", "rating_supplies": "wG2LJla", "rating_experience": "Pp1ZcHj", "weekly_items": "9oYkyrD"}, "handwrittenNote": "「把真实的工具交给有能力的孩子，感知建构的沉静」", "doodle": "🔨", "slug": "woodworking", "aliases": ["woodworking", "ge6m9XC", "creative-lab", "r-cl"]}, {"id": "YXFqLC8", "name": "探险丛（南院）", "enName": "ADVENTURE YARD", "shortCode": "COURT-S-AY", "tags": ["协调", "风险评估", "合作"], "icon": "🌲", "color": "#2E8B57", "accentColor": "#f1c834", "sheetId": "YXFqLC8", "image": "https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=800&q=80", "educationIntro": "探险丛提供富有挑战性但安全可控的大肌肉运动环境。树屋平台与攀爬绳网促使儿童在攀高、平衡、下落中不断测试自己的身体边界，培养“自我风险评估”与勇敢自信。脚踏车骑行动线与跷跷板等协同器材，促进孩子之间的规则建立、轮流等待与社交协作。", "montessoriPrinciples": [{"title": "适度挑战与大肌肉发展", "desc": "树屋扶手、绳网攀爬架促使四肢肌肉与核心肌群充分发力，促进大运动神经发育。"}, {"title": "自主风险评估能力", "desc": "孩子在自然起伏与攀爬高度中学习评估自身能力，懂得何处止步、如何安全借力。"}, {"title": "规则意识与同伴协作", "desc": "双人脚踏车、跷跷板需要儿童相互配合节奏与轮流等待，在运动中建立社交智慧。"}], "checkItems": ["攀爬器材（结构稳固，绳网无松动；滑梯干净、无水渍）", "树屋平台（楼梯扶手牢固，无松动；表面无垃圾杂物）", "幼儿脚踏车（摆放整齐，车轮完好；无损坏部件）", "跷跷板（支点稳固，表面无裂缝；周围无障碍物）", "植物绿化（无杂物、无断枝，通道畅通）"], "weeklyCheckItems": ["整体安全评级：是否存在反复出现的问题（积水、杂物、虫害）", "材料状况：沙池沙子、水池池壁、独木桥材质是否需要大修", "绿化养护：是否需重新修剪、补种、除虫", "功能性体验：儿童是否能安全舒适地探索，是否需新增安全标识或围挡", "资源投入：是否需补充沙子/更换木材/升级排水系统"], "fieldMap": {"title": "01ZM8y7", "items": "mHe1U1b", "user": "9XFXz5d", "date": "mKUEya0", "photos": "S25BNzT", "remarks": "AnxFawz", "confirm": "9WygHUY", "patrolType": "tSzctOu", "rating_safety": "SmLXq65", "rating_hygiene": "GpFh9J8", "rating_supplies": "wG2LJla", "rating_experience": "Pp1ZcHj", "weekly_items": "9oYkyrD"}, "handwrittenNote": "「在树屋与绳网间，测量自己的身体与勇气边界」", "doodle": "🌲", "slug": "adventure", "aliases": ["adventure", "YXFqLC8", "kRER5TK", "court-s-ad"]}, {"id": "hERWDMS", "name": "绿草坪（东院）", "enName": "GREEN MEADOW", "shortCode": "COURT-E-GM", "tags": ["奔跑", "平衡", "耐力"], "icon": "🌿", "color": "#437C17", "accentColor": "#f1c834", "sheetId": "hERWDMS", "image": "https://images.unsplash.com/photo-1508873696983-2df5293cb32f?auto=format&fit=crop&w=800&q=80", "educationIntro": "宽阔的天然绿茵给孩子提供释放天性、畅快奔跑的自由空间。结合沙水游戏区与平衡木，锻炼儿童的前庭觉、本体感与大肌肉群耐力。阳光与微风中的户外活动不仅增强体质，更能促进神经系统的健康发育。", "montessoriPrinciples": [{"title": "自由奔跑与体能释放", "desc": "平整柔软的草坪给予孩子充分的安全感，鼓励幼儿尽情奔跑、翻滚与开展户外集体游戏。"}, {"title": "前庭觉与本体平衡训练", "desc": "独木桥、平衡步道促使儿童保持平衡姿态，提升脑部空间知觉与身体协调度。"}, {"title": "阳光感官体验", "desc": "每日适量户外光照促进维生素D合成与视力健康，在开阔视野中培养开朗心境。"}], "checkItems": ["地面草坪：平整、无积水、无坑洼；无杂物、石块或尖锐物体", "沙池与水池：沙子干净无异物，水质清澈无异味；玩具归位", "周边设施：木质栈道/围栏稳固无松动；洗手池排水畅通", "绿化植被：树枝修剪适度，无枯枝断落风险；灌木丛无杂乱杂草", "活动器械：独木桥、平衡木摆放稳固，无破损"], "weeklyCheckItems": ["整体安全评级：是否存在反复出现的问题（积水、杂物、虫害）", "材料状况：沙池沙子、水池池壁、独木桥材质是否需要大修", "绿化养护：是否需重新修剪、补种、除虫", "功能性体验：儿童是否能安全舒适地探索", "资源投入：是否需补充沙子/更换木材/升级排水系统"], "fieldMap": {"title": "01ZM8y7", "items": "mHe1U1b", "user": "9XFXz5d", "date": "mKUEya0", "photos": "S25BNzT", "remarks": "AnxFawz", "confirm": "9WygHUY", "patrolType": "tSzctOu", "rating_safety": "SmLXq65", "rating_hygiene": "GpFh9J8", "rating_supplies": "wG2LJla", "rating_experience": "Pp1ZcHj", "weekly_items": "9oYkyrD"}, "handwrittenNote": "「在风与阳光中奔跑，让前庭觉与体能自然生发」", "doodle": "🌱", "slug": "lawn", "aliases": ["lawn", "hERWDMS", "green-lawn", "court-e-gl"]}, {"id": "TPM8LPh", "name": "正门0", "enName": "CAMPUS ENTRANCE & CHECKPOINT", "shortCode": "AREA-ENTRANCE", "tags": ["安全", "礼仪", "第一印象"], "icon": "🚪", "color": "#654096", "accentColor": "#f1c834", "sheetId": "TPM8LPh", "image": "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=800&q=80", "educationIntro": "晨间入园的第一站，是家园共育与晨检健康的守护屏障。幼儿专属低矮洗手池与换鞋区，让孩子从迈入校门的第一刻起就练习自主更鞋、规范洗手。仪式感与温馨的迎宾环境，让孩子在微笑与问候中开启能量满满的一天。", "montessoriPrinciples": [{"title": "入园晨检与仪式感", "desc": "老师亲切问候、体温手口晨检，让孩子在被尊重与关爱中建立心理安全边界。"}, {"title": "自主更鞋与生活自理", "desc": "低矮鞋凳与专属鞋架，支持孩子独立完成脱鞋、换鞋与收纳动作。"}, {"title": "安全第一防线", "desc": "门禁防冲撞、保安在岗记录、出入口无障碍通行，筑牢校园全天候安全防线。"}], "checkItems": ["正门口植物：叶片整洁，无枯萎；花盆稳固，无垃圾", "广告立牌/招牌：摆放端正，无倒伏；内容干净可见", "幼儿洗手池：水龙头正常出水；无积水、无堵塞", "成人换鞋区域：鞋凳整洁，地面无泥水", "鞋套柜：鞋套整齐，数量充足", "雨鞋架：摆放整齐", "保安亭：人员在岗，记录清晰；环境整洁"], "weeklyCheckItems": ["正门口植物：集中修剪、施肥或补种", "广告立牌：全面清洗，检查螺丝是否牢固", "洗手池：水龙头、排水管全面清理", "换鞋区域：全面清洗，检查是否需更换地垫", "鞋套柜/雨鞋架：清洁消毒，统计补充", "保安亭：整体检查电源、照明、设备", "木地板：深度清洁一次，做上漆养护"], "fieldMap": {"title": "01ZM8y7", "items": "mHe1U1b", "user": "9XFXz5d", "date": "mKUEya0", "photos": "S25BNzT", "remarks": "AnxFawz", "confirm": "9WygHUY", "patrolType": "tSzctOu", "rating_safety": "SmLXq65", "rating_hygiene": "GpFh9J8", "rating_supplies": "wG2LJla", "rating_experience": "Pp1ZcHj", "weekly_items": "9oYkyrD"}, "handwrittenNote": "「在晨间的第一声问候与自主更鞋里，开启独立日常」", "doodle": "🚪", "slug": "gate", "aliases": ["gate", "TPM8LPh", "main-gate", "gate-0"]}, {"id": "k6U7VNy", "name": "WePlay｜趣玩主题教室", "enName": "WePlay SENSORY ROOM", "shortCode": "AREA-WP", "tags": ["律动", "绘本", "感统"], "icon": "🎨", "color": "#D97724", "accentColor": "#f1c834", "sheetId": "k6U7VNy", "image": "https://images.unsplash.com/photo-1596464716127-f2a829822301?auto=format&fit=crop&w=800&q=80", "educationIntro": "融合感官探索、身体律动与绘本戏剧的多元体验空间。丰富且可重构的感统器材帮助孩子发展空间知觉与身体核心力量。绘本阅览与戏剧扮演角激发儿童的语言表达、想象力与共情能力。", "montessoriPrinciples": [{"title": "感统统合与空间探索", "desc": "通过波波池、软体平衡包等感官材料，帮助前庭觉与触觉敏感期儿童获得良性刺激。"}, {"title": "绘本戏剧与语言启蒙", "desc": "开放式低矮绘本架配合角色道具，支持孩子自主选书并在游戏中练习词汇表达。"}, {"title": "秩序与用具归位", "desc": "每组教具贴有彩色图文标识，孩子使用后学会分门别类整理放回原位。"}], "checkItems": ["地面清扫（保持无浮尘、无异物）", "物品归位整理（器材教具摆放整齐）", "安全检查（软包器材无破损、边角防撞完好）", "教具归位（绘本归架、道具收纳进箱）", "地面清洁（防滑软垫平整无翘角）", "通风换气（空气流通、温度适宜）", "安全用电（插座防护盖紧闭，无拖拽排插）"], "weeklyCheckItems": [], "fieldMap": {"title": "01ZM8y7", "items": "mHe1U1b", "user": "9XFXz5d", "date": "mKUEya0", "photos": "S25BNzT", "remarks": "AnxFawz", "confirm": "9WygHUY", "patrolType": "tSzctOu", "rating_safety": "SmLXq65", "rating_hygiene": "GpFh9J8", "rating_supplies": "wG2LJla", "rating_experience": "Pp1ZcHj", "sub_items": "zGZFwhi"}, "handwrittenNote": "「律动、绘本与身体探索，唤醒感官与丰富表达」", "doodle": "🎨", "slug": "weplay", "aliases": ["weplay", "k6U7VNy", "c-weplay"]}, {"id": "o5rH9XG", "name": "Co-Space/M’s Space｜共享空间", "enName": "M’s Space / Co-working Lounge", "shortCode": "AREA-MS", "tags": ["咨询", "办公", "协作"], "icon": "☕", "color": "#4A5568", "accentColor": "#f1c834", "sheetId": "o5rH9XG", "image": "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80", "educationIntro": "家校沟通、教师教研与家长沙龙的共创空间。秉持开放、平等、温度的对话氛围，连接家庭、学校与社区。", "montessoriPrinciples": [{"title": "家园协同与教育共识", "desc": "提供温馨静谧的面谈空间，支持教师与家长深入交流儿童成长观察记录与个性化养育方案。"}, {"title": "教师教研与专业赋能", "desc": "配备教案研讨台与专业蒙氏教研图书，为教师提供持续精进教学设计的支持空间。"}, {"title": "社区化开放共享", "desc": "定期开展家长育儿工作坊与沙龙，构建互信互助的成长型社区。"}], "checkItems": ["地面清扫（整洁无杂物）", "物品归位整理（桌椅摆放端正、洽谈资料归档）", "安全检查（消防器材正常、门窗锁闭完好）", "教具与资料归位（研讨资料整理进柜）", "地面清洁（地毯洁净无污渍）", "通风换气（温湿度适宜）", "安全用电（投影/电脑/咖啡机断电或处于安全待机）"], "weeklyCheckItems": [], "fieldMap": {"title": "01ZM8y7", "items": "mHe1U1b", "user": "9XFXz5d", "date": "mKUEya0", "photos": "S25BNzT", "remarks": "AnxFawz", "confirm": "9WygHUY", "patrolType": "tSzctOu", "rating_safety": "SmLXq65", "rating_hygiene": "GpFh9J8", "rating_supplies": "wG2LJla", "rating_experience": "Pp1ZcHj", "sub_items": "zGZFwhi"}, "handwrittenNote": "「以开放与平等之姿，连接家庭、学校与社区」", "doodle": "☕", "slug": "cospace", "aliases": ["cospace", "co-space", "o5rH9XG", "c-cospace"]}, {"id": "Ibi6IE6", "name": "前廊1", "enName": "THE VERANDA", "shortCode": "AREA-PORCH", "tags": ["衔接", "自然", "过渡"], "icon": "🏡", "color": "#5C5470", "accentColor": "#f1c834", "sheetId": "Ibi6IE6", "image": "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80", "educationIntro": "室内外流转的半开放过渡长廊，让孩子在光影与微风中感受四季流转。既是遮阳避雨的缓冲区，也是儿童自主观察天气、穿脱外套与进行轻量自然观察的生活场域。", "montessoriPrinciples": [{"title": "自然光影与季节感知", "desc": "在长廊中观察阳光倾斜角度与落叶变化，感知自然时序的韵律。"}, {"title": "动静转换与情绪平复", "desc": "作为激烈户外运动与安静室内工作之间的过渡带，帮助儿童平复呼吸与心率。"}, {"title": "整洁有序的流线引导", "desc": "防滑地面与开阔长廊引导儿童有序缓步慢行，建立公共空间的行走礼仪。"}], "checkItems": ["地面与台阶：干净无杂物，防滑条完好", "绿化植被：悬挂植物稳固，枝叶修剪整齐，花槽无积水", "通道通畅：无推车或大件杂物堆积，保持紧急疏散通道畅通", "照明与排水：灯具正常点亮，排水沟无落叶淤积堵塞"], "weeklyCheckItems": ["绿化规划：是否需要调整植被布局，避免荒废角落", "设施维护：拱门/栅栏是否需大修或更换", "环境安全：是否有潜在安全风险（枯枝掉落、拱门倾斜）", "体验反馈：家长、访客是否觉得前廊舒适美观，氛围是否温馨"], "fieldMap": {"title": "01ZM8y7", "items": "mHe1U1b", "user": "9XFXz5d", "date": "mKUEya0", "photos": "S25BNzT", "remarks": "AnxFawz", "confirm": "9WygHUY", "patrolType": "tSzctOu", "rating_safety": "SmLXq65", "rating_hygiene": "GpFh9J8", "rating_supplies": "wG2LJla", "rating_experience": "Pp1ZcHj", "weekly_items": "9oYkyrD"}, "handwrittenNote": "「室内外的自然流转，在光影与微风中感受四季时序」", "doodle": "🌿", "slug": "veranda", "aliases": ["veranda", "Ibi6IE6", "porch", "veranda-1"]}], "teacherPasscode": "2026"};
-const staffList = [{"userid": "29375738671546912662", "unionid": "rS1fbXshJfe9KTBAaKJiiMgiEiE", "name": "邵建侠", "title": "财务"}, {"userid": "17656041533023845", "unionid": "5B2PXwBk5zCkPm1xwSVaOwiEiE", "name": "杜红岩", "title": "营养师"}, {"userid": "0120326800501051572", "unionid": "FKkr0ShbtiSYdVZEqUrXqQwiEiE", "name": "胡灵", "title": "营养师"}, {"userid": "293666182027238671", "unionid": "OcpLblNxjNsFgzUufz2a3QiEiE", "name": "毛喜成", "title": "新媒体负责人"}, {"userid": "01131329491175066", "unionid": "DwSbpCm7OYeFnUugiSe4fQAiEiE", "name": "郭慧", "title": "教学园长"}, {"userid": "17560998046725553", "unionid": "XC9TaiiuYDBgqb6gQhS98pQiEiE", "name": "李沁一", "title": "教务处负责人"}, {"userid": "015018644637914476", "unionid": "qxhmlb4ZAnmFnUugiSe4fQAiEiE", "name": "陈王敏", "title": "执行园长"}, {"userid": "015018644521509971", "unionid": "cDq12jDIWcGFnUugiSe4fQAiEiE", "name": "周士顶", "title": "总园长"}, {"userid": "17621575014438205", "unionid": "0AP8L224KZVsGwKBapoxYgiEiE", "name": "凌敏", "title": "总务负责人"}, {"userid": "17688004084203710", "unionid": "2Km87CUDGR2FnUugiSe4fQAiEiE", "name": "史吏", "title": "安保运营"}, {"userid": "146024141124194753", "unionid": "vMAd0y066NSE4RXRFwQd6AiEiE", "name": "张怡玢", "title": "学生处负责人"}, {"userid": "034621654132334748", "unionid": "LkGaPYWOrUaFnUugiSe4fQAiEiE", "name": "耿康维", "title": "学生处负责人"}, {"userid": "11545828641645424125", "unionid": "kmii2USwwlhaHn02YTEN24QiEiE", "name": "王丽", "title": "园长助理"}, {"userid": "053859090121346816", "unionid": "tJRRsiiqHIWeE4RXRFwQd6AiEiE", "name": "刘贯男", "title": "品牌负责人"}, {"userid": "08042244451026075139", "unionid": "NZ58iiYFLS4qKT3y8DRA5pAiEiE", "name": "苏玲", "title": "厨工"}, {"userid": "175038181160111", "unionid": "wXh2xY8clHgnWY48Mr8Y9giEiE", "name": "陈齐英", "title": "厨工"}, {"userid": "01232403614520322720", "unionid": "5wTnQPn1FiiOxNXHSDjPwzQiEiE", "name": "付灵芝", "title": "助教2"}, {"userid": "286815114423955661", "unionid": "gm3UhuYCZnaHn02YTEN24QiEiE", "name": "康丽艳", "title": "助教2"}, {"userid": "0840624347788371", "unionid": "uiSPRp9VPWby9KTBAaKJiiMgiEiE", "name": "张芳", "title": "助教2"}, {"userid": "17446190069191962", "unionid": "QSjXuNIzAFiPIb4qIiPNzv4AiEiE", "name": "彪毅", "title": "助教2"}, {"userid": "045452373029654419", "unionid": "YwgSE0qm0eYFgzUufz2a3QiEiE", "name": "王静洁", "title": "助教2"}, {"userid": "243620351633460493", "unionid": "rrq80iSpKwnv4MhnOeAWfSwiEiE", "name": "董永红", "title": "助教2"}, {"userid": "195529522338197745", "unionid": "TQiir9x4iP3jZq4sOaLYKeIwiEiE", "name": "颜东英", "title": "助教2"}, {"userid": "17507540020305587", "unionid": "39v0uXll8BFq4sOaLYKeIwiEiE", "name": "OLGA", "title": "兼职老师"}, {"userid": "16636319251525392", "unionid": "ZE8QnUm7ojSE4RXRFwQd6AiEiE", "name": "黄程", "title": "兼职老师"}, {"userid": "17755484494079279", "unionid": "k9o4NOfMknfch0zXJLeHXAiEiE", "name": "魏春海", "title": "保安"}, {"userid": "225704363421091054", "unionid": "uc6onrI7NsaHn02YTEN24QiEiE", "name": "刘泽琳", "title": "亲子空间助教"}, {"userid": "125108666121661951", "unionid": "hriP0vNgFVuKE4RXRFwQd6AiEiE", "name": "吴玉琴", "title": "亲子空间助教"}, {"userid": "17750197427332551", "unionid": "xEj9QdggcAQnWY48Mr8Y9giEiE", "name": "周媚然", "title": "亲子空间助教"}, {"userid": "046713121220181367", "unionid": "A8WEJBY0gMYnWY48Mr8Y9giEiE", "name": "丁秋怡", "title": "亲子空间主班"}, {"userid": "17743300727205894", "unionid": "JviP1Kebg09aKT3y8DRA5pAiEiE", "name": "李晓萌", "title": "亲子空间主班"}, {"userid": "313908595129169509", "unionid": "yqMElJFfp52E4RXRFwQd6AiEiE", "name": "王婷昱", "title": "亲子空间主班"}, {"userid": "032355304940137956", "unionid": "A0ScuP0PBayFnUugiSe4fQAiEiE", "name": "黄莹莹", "title": "亲子空间主班"}, {"userid": "17685465134439624", "unionid": "bzJFgaLF1Qxqt9ponvRWsQiEiE", "name": "Karren", "title": "IC外教"}, {"userid": "17755382530502945", "unionid": "0GGITRKKwBt9fjd4YQFQiSAiEiE", "name": "Maryna ", "title": "IC外教"}, {"userid": "17779461694954828", "unionid": "eUGvDiPQa4Svl5AF6URUZJwiEiE", "name": "闫美婷", "title": "IC助教"}, {"userid": "205104060020472310", "unionid": "IzCJINpZZAwFgzUufz2a3QiEiE", "name": "任美玉", "title": "IC主班"}, {"userid": "17704701807115698", "unionid": "gmFiPOMg0CN5q4sOaLYKeIwiEiE", "name": "庄晓元", "title": "IC主班"}, {"userid": "17723296680697930", "unionid": "5dbZ4sYrxt75y9L6iiHHNZwiEiE", "name": "庞曼玉", "title": "IC主班"}, {"userid": "130220553338192343", "unionid": "T1kc2pqqEz1q4sOaLYKeIwiEiE", "name": "陈雨婷", "title": "IC主班"}, {"userid": "27335207622140939144", "unionid": "lK5svAS1PIonWY48Mr8Y9giEiE", "name": "Grace ", "title": "CASA外教"}, {"userid": "16355413423164849", "unionid": "lny4POrciPdMnWY48Mr8Y9giEiE", "name": "gaby", "title": "CASA外教"}, {"userid": "132469135823083165", "unionid": "SC5UkCiSsgiS5s3gRsOfaV4wiEiE", "name": "姜盈莉", "title": "CASA助教"}, {"userid": "244102582838317222", "unionid": "Eiir7iSb4HQF9s3gRsOfaV4wiEiE", "name": "韦玲玲", "title": "CASA助教"}, {"userid": "363317483020365496", "unionid": "sTSLT3SatyoFgzUufz2a3QiEiE", "name": "何杨洋", "title": "CASA主班"}, {"userid": "253961644324192433", "unionid": "iPFiS4Ok3INTJq4sOaLYKeIwiEiE", "name": "张悦婷", "title": "CASA主班"}, {"userid": "0144316969571002793", "unionid": "pkJPBDW6iSSasmJZdiPw7xUQiEiE", "name": "管咪咪", "title": "CASA主班"}, {"userid": "442218575769830", "unionid": "yXvcnHJDX6VMLAOpGj4tTwiEiE", "name": "周如凤 Enoch", "title": "教师"}];
+// Cloudflare Pages Function
+import areasConfig from "../data/areas_config.json";
+import staffList from "../data/staff_list.json";
 
-function jsonResponse(data, status = 200) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: {
-      "Content-Type": "application/json; charset=utf-8",
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type, Authorization",
-    },
-  });
+import {
+  authenticateRequest,
+  contentLengthExceeds,
+  isSameOriginRequest,
+  jsonResponse,
+  readJsonBody,
+  RequestBodyError,
+} from "../_lib/security.js";
+
+const MAX_REQUEST_BYTES = 256 * 1024;
+const MAX_REMARKS_LENGTH = 2000;
+const MAX_PHOTOS = 5;
+
+class RequestValidationError extends Error {}
+
+function requireRating(value, fieldName) {
+  if (typeof value !== "number" || !Number.isInteger(value) || value < 1 || value > 5) {
+    throw new RequestValidationError(`${fieldName}评分必须是 1 到 5 的整数`);
+  }
+  return value;
 }
 
 async function getDingTalkToken(appKey, appSecret) {
@@ -21,8 +31,8 @@ async function getDingTalkToken(appKey, appSecret) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ appKey, appSecret }),
   });
-  const data = await resp.json();
-  if (data && data.accessToken) {
+  const data = await resp.json().catch(() => ({}));
+  if (resp.ok && data && data.accessToken) {
     return data.accessToken;
   }
   throw new Error(`DingTalk token fetch failed: ${JSON.stringify(data)}`);
@@ -32,28 +42,80 @@ export async function onRequest(context) {
   const { request, env } = context;
   if (request.method === "OPTIONS") return jsonResponse(null, 204);
   if (request.method !== "POST") return jsonResponse({ error: "Method Not Allowed" }, 405);
+  if (!isSameOriginRequest(request)) return jsonResponse({ error: "Forbidden origin" }, 403);
+  if (contentLengthExceeds(request, MAX_REQUEST_BYTES)) return jsonResponse({ error: "Request too large" }, 413);
 
   try {
-    const data = await request.json();
-    const areaId = data.areaId || "";
-    let sheetId = data.sheetId || areaId;
-    const baseId = areasConfig.baseId || "dpYLaezmVNL9GkK1u4YgEkAA8rMqPxX6";
+    const signedUser = await authenticateRequest(request, env);
+    const sessionUser = signedUser && (staffList || []).some((staff) => staff.userid === signedUser.userid)
+      ? signedUser
+      : null;
+    if (!sessionUser) return jsonResponse({ error: "教师会话无效或已过期，请重新登录" }, 401);
+
+    const data = await readJsonBody(request, MAX_REQUEST_BYTES);
+    if (!data || typeof data !== "object" || Array.isArray(data)) {
+      throw new RequestValidationError("请求数据格式无效");
+    }
+    const areaId = String(data.areaId || "").trim();
+    const baseId = String(areasConfig.baseId || "").trim();
 
     const matchedArea = (areasConfig.areas || []).find(
-      (a) => a.id === areaId || a.sheetId === sheetId
+      (a) => a.id === areaId || a.slug === areaId || (a.aliases || []).includes(areaId)
     );
-    if (matchedArea) {
-      sheetId = matchedArea.sheetId;
+    if (!matchedArea) {
+      throw new RequestValidationError("无效的巡检区域");
+    }
+    const sheetId = matchedArea.sheetId;
+    if (!baseId || !sheetId) {
+      return jsonResponse({ error: "钉钉表格配置不完整" }, 503);
     }
 
-    const areaName = matchedArea ? matchedArea.name : (data.areaName || "未命名区域");
-    const patrolType = data.patrolType || "每日巡检";
-    const userId = data.userId || "015018644521509971";
-    const userName = data.userName || "周士顶";
-    const checkItems = data.checkItems || [];
-    const remarks = data.remarks || "";
-    const ratings = data.ratings || {};
-    const photos = data.photos || [];
+    const areaName = matchedArea.name;
+    const patrolType = String(data.patrolType || "每日巡检");
+    if (patrolType !== "每日巡检") throw new RequestValidationError("暂不支持该巡检类型");
+
+    if (!Array.isArray(data.checkItems) || data.checkItems.length === 0) {
+      throw new RequestValidationError("请至少确认一个巡检标准项");
+    }
+    const allowedItems = new Set(matchedArea.checkItems || []);
+    const checkItems = [...new Set(data.checkItems.map((item) => String(item)))];
+    if (checkItems.length > allowedItems.size || checkItems.some((item) => !allowedItems.has(item))) {
+      throw new RequestValidationError("巡检标准项与当前区域配置不一致");
+    }
+
+    if (data.remarks !== undefined && data.remarks !== null && typeof data.remarks !== "string") {
+      throw new RequestValidationError("巡检备注格式无效");
+    }
+    const remarks = String(data.remarks || "").trim();
+    if (remarks.length > MAX_REMARKS_LENGTH) throw new RequestValidationError("巡检备注不能超过 2000 字");
+
+    const ratings = data.ratings && typeof data.ratings === "object" ? data.ratings : {};
+    const normalizedRatings = {
+      safety: requireRating(ratings.safety, "安全维度"),
+      hygiene: requireRating(ratings.hygiene, "环境卫生维度"),
+      supplies: requireRating(ratings.supplies, "设备与物资维度"),
+      experience: requireRating(ratings.experience, "家园体验维度"),
+    };
+
+    const photos = data.photos === undefined ? [] : data.photos;
+    if (!Array.isArray(photos) || photos.length > MAX_PHOTOS) {
+      throw new RequestValidationError(`现场照片最多 ${MAX_PHOTOS} 张`);
+    }
+    const photoReferences = photos.map((reference) => String(reference));
+    if (photoReferences.some((reference) => !/^patrol\/[a-zA-Z0-9/_-]+\.(?:jpe?g|png|webp)$/.test(reference))) {
+      throw new RequestValidationError("现场照片凭据格式无效，请重新上传");
+    }
+    if (photoReferences.length > 0) {
+      if (!env.PATROL_UPLOADS || typeof env.PATROL_UPLOADS.head !== "function") {
+        throw new RequestValidationError("照片存储尚未配置，请重新上传");
+      }
+      for (const reference of photoReferences) {
+        const object = await env.PATROL_UPLOADS.head(reference);
+        if (!object || object.customMetadata?.userid !== sessionUser.userid) {
+          throw new RequestValidationError("现场照片凭据不存在或不属于当前教师");
+        }
+      }
+    }
 
     const now = new Date();
     const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")} ${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
@@ -61,21 +123,22 @@ export async function onRequest(context) {
     const titleStr = `${todayDateStr} ${areaName}-${patrolType}正常`;
 
     let fullRemarks = remarks;
-    if (photos && photos.length > 0) {
-      fullRemarks = `${remarks}\n【附带现场照片】: ${photos.length} 张已核验`.trim();
+    if (photoReferences.length > 0) {
+      const photoLine = `【现场照片凭据】: ${photoReferences.join(", ")}`;
+      fullRemarks = `${remarks}\n${photoLine}`.trim();
     }
 
     const recordFields = {
       "标题": titleStr,
-      "打卡项目": checkItems.length > 0 ? checkItems : ["全部正常"],
+      "打卡项目": checkItems,
       "巡检类型": patrolType,
       "巡检日期": Date.now(),
-      "人员": [{ userId: userId }],
+      "人员": [{ userId: sessionUser.userid }],
       "确认完成": true,
-      "该区域安全维度评分⭐️": parseInt(ratings.safety || 5, 10),
-      "该区域环境卫生维度评分⭐️": parseInt(ratings.hygiene || 5, 10),
-      "该区域设备与物资维度评分⭐️": parseInt(ratings.supplies || 5, 10),
-      "该区域家园体验维度评分⭐️": parseInt(ratings.experience || 5, 10),
+      "该区域安全维度评分⭐️": normalizedRatings.safety,
+      "该区域环境卫生维度评分⭐️": normalizedRatings.hygiene,
+      "该区域设备与物资维度评分⭐️": normalizedRatings.supplies,
+      "该区域家园体验维度评分⭐️": normalizedRatings.experience,
       "备注": fullRemarks || "移动端扫码打卡：安全无隐患，物品均已归位。",
     };
 
@@ -84,9 +147,12 @@ export async function onRequest(context) {
       delete recordFields["打卡项目"];
     }
 
-    const DINGTALK_APP_KEY = env.DINGTALK_APP_KEY || "dingh5hmtyjgs4klkcdu";
-    const DINGTALK_APP_SECRET = env.DINGTALK_APP_SECRET || "SDheeIfdPDzoLHUFbi9EXlOh3WzPeGcWoyF2OsCeW44Z84rKxCe9-YNnthJRtMfM";
-    const DINGTALK_OPERATOR_ID = env.DINGTALK_OPERATOR_ID || "cDq12jDIWcGFnUugiSe4fQAiEiE";
+    const DINGTALK_APP_KEY = String(env.DINGTALK_APP_KEY || "").trim();
+    const DINGTALK_APP_SECRET = String(env.DINGTALK_APP_SECRET || "").trim();
+    const DINGTALK_OPERATOR_ID = String(env.DINGTALK_OPERATOR_ID || "").trim();
+    if (!DINGTALK_APP_KEY || !DINGTALK_APP_SECRET || !DINGTALK_OPERATOR_ID) {
+      return jsonResponse({ error: "钉钉写入配置不完整" }, 503);
+    }
 
     const token = await getDingTalkToken(DINGTALK_APP_KEY, DINGTALK_APP_SECRET);
     const dtUrl = `https://api.dingtalk.com/v1.0/notable/bases/${baseId}/sheets/${sheetId}/records?operatorId=${DINGTALK_OPERATOR_ID}`;
@@ -100,9 +166,13 @@ export async function onRequest(context) {
       body: JSON.stringify({ records: [{ fields: recordFields }] }),
     });
 
-    const dtData = await dtResp.json();
+    const dtData = await dtResp.json().catch(() => ({}));
+    if (!dtResp.ok) {
+      throw new Error(`DingTalk record create failed with HTTP ${dtResp.status}`);
+    }
     const recordsVal = dtData.value || [];
-    const recordId = recordsVal.length > 0 ? recordsVal[0].id : "unknown";
+    const recordId = recordsVal.length > 0 ? recordsVal[0].id : "";
+    if (!recordId) throw new Error("DingTalk record create returned no record id");
 
     return jsonResponse({
       success: true,
@@ -110,10 +180,12 @@ export async function onRequest(context) {
       recordId: recordId,
       areaName: areaName,
       timestamp: todayStr,
-      userName: userName,
+      userName: sessionUser.name,
     });
   } catch (e) {
-    console.error("Checkin submit error:", e);
-    return jsonResponse({ error: `巡检打卡提交失败: ${e.message}` }, 500);
+    if (e instanceof RequestValidationError) return jsonResponse({ error: e.message }, 400);
+    if (e instanceof RequestBodyError) return jsonResponse({ error: e.message }, e.status);
+    console.error(JSON.stringify({ message: "checkin_submit_failed", error: e instanceof Error ? e.message : String(e) }));
+    return jsonResponse({ error: "巡检打卡提交失败，请稍后重试" }, 502);
   }
 }

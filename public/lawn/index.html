@@ -614,13 +614,13 @@ body {
           </div>
           <div>
             <div class="teacher-meta-name">
-              <span id="current-teacher-name">周士顶</span>
+              <span id="current-teacher-name">待认证</span>
               <span style="font-size: 13px; font-weight: 500; color: #555;">老师</span>
             </div>
-            <div class="teacher-meta-role" id="current-teacher-dept">数字化运营 / 负责人</div>
+            <div class="teacher-meta-role" id="current-teacher-dept">请先完成身份认证</div>
             <div class="session-badge">
               <span>●</span>
-              <span id="session-status-text">钉钉身份已认证 · 90天免登有效</span>
+              <span id="session-status-text">等待教师身份认证</span>
             </div>
           </div>
         </div>
@@ -718,7 +718,7 @@ body {
         <!-- Submit Button directly locking current teacher -->
         <button type="button" id="submit-patrol-btn" class="patrol-submit-btn" onclick="submitPatrol()">
           <span>✅</span>
-          <span id="submit-btn-text">确认并以【周士顶】老师身份提交打卡</span>
+          <span id="submit-btn-text">请先完成教师身份认证</span>
         </button>
 
       </section>
@@ -763,7 +763,7 @@ body {
     </div>
   </div>
 
-  <script src="/app.js?v=20260828_1549"></script>
+  <script src="/app.js?v=20260829_security"></script>
 
 
   <!-- DingTalk Login Prompt Modal with Instant Staff Search & OAuth -->
@@ -779,7 +779,12 @@ body {
 
       <!-- Search Input -->
       <div style="margin-bottom: 8px;">
-        <input type="text" id="staff-search-input" class="form-input-box" placeholder="🔍 输入姓名快速查找教师 (如: 周士顶)..." oninput="filterStaffList(this.value)" style="padding: 8px 12px; font-size: 13px;">
+        <input type="text" id="staff-search-input" class="form-input-box" placeholder="🔍 输入姓名快速查找教师 (如: 输入姓名)..." oninput="filterStaffList(this.value)" style="padding: 8px 12px; font-size: 13px;">
+      </div>
+
+      <div style="display:flex; gap:8px; margin-bottom:8px;">
+        <input type="password" id="manual-passcode-input" class="form-input-box" placeholder="教师名录访问口令" autocomplete="current-password" style="padding:8px 12px; font-size:13px;">
+        <button type="button" class="switch-teacher-btn" style="white-space:nowrap;" onclick="unlockTeacherDirectory()">载入名录</button>
       </div>
 
       <!-- Quick Staff List -->

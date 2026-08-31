@@ -1,3 +1,2 @@
-# Cloudflare Pages SPA Sub-route rewrites
-/api/*  /api/:splat  200
-/*      /index.html  200
+# Every supported space has a physical directory index.
+# Cloudflare Pages Functions handle /api/* before static asset routing.

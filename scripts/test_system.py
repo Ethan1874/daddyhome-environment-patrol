@@ -1,78 +1,82 @@
 #!/usr/bin/env python3
-import sys
-import json
+"""Safe local regression tests. This module never writes to DingTalk."""
+
+import base64
+import tempfile
 import time
-import urllib.request
+import unittest
 from pathlib import Path
+import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 import server
 
-def test_local_api():
-    print("1. Testing config loading...")
-    cfg = server.load_areas_config()
-    areas = cfg.get("areas", [])
-    print(f"   Loaded {len(areas)} areas.")
-    assert len(areas) >= 8, "Areas count should be >= 8"
 
-    print("2. Testing DingTalk token fetch...")
-    token = server.get_dingtalk_token()
-    assert bool(token), "Token should not be empty"
-    print("   Token fetched successfully!")
+class PatrolSecurityTests(unittest.TestCase):
+    def setUp(self):
+        self.original_session_secret = server.PATROL_SESSION_SECRET
+        server.PATROL_SESSION_SECRET = "test-only-session-secret-with-sufficient-entropy"
 
-    print("3. Testing mock checkin on '木工教室' (ge6m9XC)...")
-    wood_area = next(a for a in areas if a["id"] == "ge6m9XC")
-    
-    # Direct test of checkin payload
-    today_date = time.strftime("%Y-%m-%d")
-    record_fields = {
-        "标题": f"{today_date} 木工教室-日常巡检正常",
-        "打卡项目": [
-            "工具归位（锯、锤、钻、电动工具等收纳在指定位置，幼儿不可随意触碰）",
-            "危险品管理（刀具、钉子、螺丝等存放在封闭容器内）",
-            "电源安全（电动工具电源关闭，无裸露电线）",
-            "工作台面（无木屑、钉子残留，保持干净平整）",
-            "防护用品（护目镜、手套齐备、清洁）",
-            "地面环境（无木屑、杂物，通道畅通，防滑）",
-            "设备清洁（电锯等常用设备表面无尘土污渍）"
-        ],
-        "巡检类型": "每日巡检",
-        "巡检日期": int(time.time() * 1000),
-        "人员": [{"userId": "015018644521509971"}],
-        "确认完成": True,
-        "该区域安全维度评分⭐️": 5,
-        "该区域环境卫生维度评分⭐️": 5,
-        "该区域设备与物资维度评分⭐️": 5,
-        "该区域家园体验维度评分⭐️": 5,
-        "备注": "系统自动化测试巡检：木工教室工具均已归位上锁，工作台清理平整，护目镜消杀齐备。"
-    }
+    def tearDown(self):
+        server.PATROL_SESSION_SECRET = self.original_session_secret
 
-    base_id = cfg.get("baseId")
-    sheet_id = wood_area["sheetId"]
-    op_id = server.DEFAULT_OPERATOR_ID
-    
-    dt_url = f"https://api.dingtalk.com/v1.0/notable/bases/{base_id}/sheets/{sheet_id}/records?operatorId={op_id}"
-    dt_body = json.dumps({"records": [{"fields": record_fields}]}, ensure_ascii=False).encode("utf-8")
-    
-    req = urllib.request.Request(
-        dt_url,
-        data=dt_body,
-        headers={
-            "Content-Type": "application/json",
-            "x-acs-dingtalk-access-token": token
-        },
-        method="POST"
-    )
+    def test_area_and_staff_sources_load(self):
+        areas = server.load_areas_config().get("areas", [])
+        staff = server.load_staff_list()
+        self.assertEqual(len(areas), 9)
+        self.assertEqual(len(staff), 48)
 
-    with urllib.request.urlopen(req, timeout=20) as resp:
-        res = json.loads(resp.read().decode("utf-8"))
-        print("   DingTalk API Response:", res)
-        record_id = res["value"][0]["id"]
-        print(f"   Successfully wrote record to 木工教室! Record ID: {record_id}")
+    def test_signed_session_round_trip_and_tamper_rejection(self):
+        user = {"userid": "teacher-1", "name": "测试老师", "title": "教师"}
+        session = server.issue_teacher_session(user)
+        verified = server.verify_teacher_session(session["token"])
+        self.assertEqual(verified["userid"], "teacher-1")
+        self.assertEqual(verified["name"], "测试老师")
 
-    print("\nAll integration tests passed successfully!")
+        payload, signature = session["token"].split(".", 1)
+        tampered = ("A" if payload[0] != "A" else "B") + payload[1:] + "." + signature
+        self.assertIsNone(server.verify_teacher_session(tampered))
+
+    def test_expired_session_is_rejected(self):
+        session = server.issue_teacher_session({"userid": "teacher-1", "name": "测试"}, expires_in_days=-1)
+        self.assertLess(session["expiresAt"], int(time.time() * 1000))
+        self.assertIsNone(server.verify_teacher_session(session["token"]))
+
+    def test_malformed_session_is_rejected_without_error(self):
+        for token in ("not-a-token", "a.@@@", "a." + ("A" * 8000)):
+            self.assertIsNone(server.verify_teacher_session(token))
+
+    def test_weak_session_secret_is_rejected(self):
+        server.PATROL_SESSION_SECRET = "too-short"
+        with self.assertRaises(RuntimeError):
+            server.issue_teacher_session({"userid": "teacher-1"})
+        self.assertIsNone(server.verify_teacher_session("anything"))
+
+    def test_image_validation_and_size_limit(self):
+        original_uploads_dir = server.UPLOADS_DIR
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            server.UPLOADS_DIR = Path(temporary_directory)
+            tiny_jpeg = b"\xff\xd8\xff\xe0" + b"test-image"
+            data_url = "data:image/jpeg;base64," + base64.b64encode(tiny_jpeg).decode("ascii")
+            reference = server.save_base64_image(data_url)
+            self.assertTrue(reference.startswith("/uploads/patrol_"))
+            self.assertEqual(len(list(Path(temporary_directory).iterdir())), 1)
+
+            with self.assertRaises(ValueError):
+                server.save_base64_image("data:image/png;base64," + base64.b64encode(tiny_jpeg).decode("ascii"))
+            with self.assertRaises(ValueError):
+                server.save_base64_image("data:text/plain;base64,dGVzdA==")
+        server.UPLOADS_DIR = original_uploads_dir
+
+    def test_source_has_no_insecure_ssl_or_cross_project_env_fallback(self):
+        source = (ROOT / "server.py").read_text(encoding="utf-8")
+        self.assertNotIn("_create_unverified_context", source)
+        self.assertNotIn("Documents/Codex/", source)
+        self.assertEqual(server.UPLOADS_DIR, ROOT / ".local-uploads")
+        self.assertFalse((ROOT / "public" / "uploads").exists())
+
 
 if __name__ == "__main__":
-    test_local_api()
+    unittest.main(verbosity=2)

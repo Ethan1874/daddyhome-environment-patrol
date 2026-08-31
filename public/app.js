@@ -2,7 +2,7 @@
 // DingTalk Official OAuth2 + JSAPI Auth Flow & 90-day Long Session
 
 const SESSION_STORAGE_KEY = 'dh_patrol_teacher_session_v2';
-const DEFAULT_EXPIRY_DAYS = 90;
+const OAUTH_STATE_STORAGE_KEY = 'dh_patrol_oauth_state_v1';
 const DINGTALK_CLIENT_ID = 'dingh5hmtyjgs4klkcdu';
 
 let AppState = {
@@ -10,6 +10,8 @@ let AppState = {
   area: null,
   isTeacher: false,
   currentTeacher: null,
+  sessionToken: '',
+  manualPasscode: '',
   selectedItems: new Set(),
   uploadedPhotos: [],
   ratings: { safety: 5, hygiene: 5, supplies: 5, experience: 5 }
@@ -21,13 +23,18 @@ document.addEventListener('DOMContentLoaded', async function() {
 
 async function initApp() {
   try {
-    const res = await fetch('/api/config');
+    const savedSession = loadTeacherSession();
+    const configHeaders = savedSession && savedSession.token
+      ? { 'Authorization': 'Bearer ' + savedSession.token }
+      : {};
+    const res = await fetch('/api/config', { headers: configHeaders });
+    if (!res.ok) throw new Error('配置加载失败');
     AppState.config = await res.json();
 
     const ua = navigator.userAgent || '';
     const isDingTalkEnv = /DingTalk/i.test(ua);
     const hostname = window.location.hostname || '';
-    const isInternalDomain = hostname.includes('daddyhome.club');
+    const isInternalDomain = hostname === 'patrol.daddyhome.club' || hostname.endsWith('.patrol.daddyhome.club');
 
     const urlParams = new URLSearchParams(window.location.search);
     const explicitRole = urlParams.get('role');
@@ -56,20 +63,19 @@ async function initApp() {
     }
     AppState.area = matched;
 
-    // 2. Check Saved Long-Lived Teacher Session
-    const savedSession = loadTeacherSession();
-
     // 3. Handle OAuth Code if redirected from DingTalk Auth
     if (authCode) {
-      const loginSuccess = await exchangeDingTalkCode(authCode);
-      if (loginSuccess) {
-        // Clean URL
-        const cleanUrl = new URL(window.location);
-        cleanUrl.searchParams.delete('code');
-        cleanUrl.searchParams.delete('authCode');
-        cleanUrl.searchParams.delete('state');
-        window.history.replaceState({}, '', cleanUrl.pathname + (cleanUrl.search ? cleanUrl.search : ''));
-      }
+      const returnedState = urlParams.get('state') || '';
+      const expectedState = sessionStorage.getItem(OAUTH_STATE_STORAGE_KEY) || '';
+      const stateValid = Boolean(returnedState && expectedState && returnedState === expectedState);
+      sessionStorage.removeItem(OAUTH_STATE_STORAGE_KEY);
+      if (stateValid) await exchangeDingTalkCode(authCode);
+      if (!stateValid) showToast('钉钉登录状态校验失败，请重新授权');
+      const cleanUrl = new URL(window.location);
+      cleanUrl.searchParams.delete('code');
+      cleanUrl.searchParams.delete('authCode');
+      cleanUrl.searchParams.delete('state');
+      window.history.replaceState({}, '', cleanUrl.pathname + (cleanUrl.search ? cleanUrl.search : ''));
     }
 
     // 4. Role & Auth Decision
@@ -79,8 +85,11 @@ async function initApp() {
       document.getElementById('parent-pure-image-flow').style.display = 'none';
       document.getElementById('teacher-workspace').style.display = 'block';
 
-      if (savedSession && savedSession.user) {
-        AppState.currentTeacher = savedSession.user;
+      if (savedSession && savedSession.token && AppState.config.hasTeacherAuth && AppState.config.user) {
+        AppState.currentTeacher = AppState.config.user;
+        AppState.sessionToken = savedSession.token;
+      } else if (savedSession) {
+        localStorage.removeItem(SESSION_STORAGE_KEY);
       }
 
       // If in DingTalk App and no saved session -> trigger DingTalk OAuth / JSAPI
@@ -92,10 +101,9 @@ async function initApp() {
           showDingTalkLoginPrompt();
           return;
         }
-      } else if (!AppState.currentTeacher && AppState.config.staff && AppState.config.staff.length > 0) {
-        // Fallback default teacher for direct browser test
-        AppState.currentTeacher = AppState.config.staff[0];
-        saveTeacherSession(AppState.currentTeacher, DEFAULT_EXPIRY_DAYS);
+      } else if (!AppState.currentTeacher) {
+        showDingTalkLoginPrompt();
+        return;
       }
 
       renderTeacherWorkspace();
@@ -128,7 +136,10 @@ async function exchangeDingTalkCode(code) {
     const data = await res.json();
     if (data.success && data.user) {
       AppState.currentTeacher = data.user;
-      saveTeacherSession(data.user, DEFAULT_EXPIRY_DAYS);
+      AppState.sessionToken = data.session && data.session.token ? data.session.token : '';
+      if (!AppState.sessionToken) return false;
+      saveTeacherSession(data.user, data.session);
+      await refreshTeacherDirectory();
       showToast('👩‍🏫 钉钉免登已识别：' + data.user.name + ' 老师 (90天有效)');
       return true;
     }
@@ -144,25 +155,23 @@ async function exchangeDingTalkCode(code) {
 function triggerDingTalkOAuth() {
   const currentUrl = window.location.origin + window.location.pathname;
   const redirectUri = encodeURIComponent(currentUrl);
-  const oauthUrl = 'https://login.dingtalk.com/oauth2/auth?client_id=' + DINGTALK_CLIENT_ID + '&response_type=code&scope=openid%20corpid&state=patrol&redirect_uri=' + redirectUri + '&prompt=consent';
+  const randomBytes = new Uint8Array(24);
+  crypto.getRandomValues(randomBytes);
+  const state = Array.from(randomBytes, function(byte) { return byte.toString(16).padStart(2, '0'); }).join('');
+  sessionStorage.setItem(OAUTH_STATE_STORAGE_KEY, state);
+  const oauthUrl = 'https://login.dingtalk.com/oauth2/auth?client_id=' + DINGTALK_CLIENT_ID + '&response_type=code&scope=openid%20corpid&state=' + encodeURIComponent(state) + '&redirect_uri=' + redirectUri + '&prompt=consent';
   window.location.href = oauthUrl;
-}
-
-function showDingTalkLoginPrompt() {
-  const modal = document.getElementById('login-prompt-modal');
-  if (modal) {
-    modal.classList.add('active');
-  }
 }
 
 // -------------------------------------------------------------
 // Long-Lived Session Helpers (90 Days Persistence)
 // -------------------------------------------------------------
-function saveTeacherSession(user, days) {
-  const expiry = Date.now() + (days || DEFAULT_EXPIRY_DAYS) * 24 * 3600 * 1000;
+function saveTeacherSession(user, session) {
+  if (!session || !session.token || !session.expiresAt) return;
   const sessionData = {
     user: user,
-    expiresAt: expiry
+    token: session.token,
+    expiresAt: session.expiresAt
   };
   try {
     localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(sessionData));
@@ -174,12 +183,55 @@ function loadTeacherSession() {
     const raw = localStorage.getItem(SESSION_STORAGE_KEY);
     if (!raw) return null;
     const data = JSON.parse(raw);
-    if (data && data.expiresAt && data.expiresAt > Date.now()) {
+    if (data && data.token && data.expiresAt && data.expiresAt > Date.now()) {
       return data;
     }
     localStorage.removeItem(SESSION_STORAGE_KEY);
   } catch(e) {}
   return null;
+}
+
+function authorizedHeaders(extra) {
+  const headers = Object.assign({}, extra || {});
+  if (AppState.sessionToken) headers.Authorization = 'Bearer ' + AppState.sessionToken;
+  return headers;
+}
+
+async function refreshTeacherDirectory() {
+  if (!AppState.sessionToken) return false;
+  const res = await fetch('/api/config', { headers: authorizedHeaders() });
+  if (!res.ok) return false;
+  const config = await res.json();
+  AppState.config.staff = config.staff || [];
+  AppState.config.hasTeacherAuth = Boolean(config.hasTeacherAuth);
+  if (config.user) AppState.currentTeacher = config.user;
+  return AppState.config.hasTeacherAuth;
+}
+
+async function unlockTeacherDirectory() {
+  const input = document.getElementById('manual-passcode-input');
+  const passcode = input ? input.value : '';
+  if (!passcode) {
+    showToast('请先输入教师名录访问口令');
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/config', {
+      headers: { 'X-Teacher-Passcode': passcode }
+    });
+    const data = await res.json();
+    if (!res.ok || !data.directoryUnlocked) {
+      showToast('教师名录访问口令无效');
+      return;
+    }
+    AppState.manualPasscode = passcode;
+    AppState.config.staff = data.staff || [];
+    renderQuickStaffList('');
+    showToast('教师名录已解锁，请选择本人身份');
+  } catch (error) {
+    showToast('教师名录加载失败，请稍后重试');
+  }
 }
 
 // -------------------------------------------------------------
@@ -218,10 +270,25 @@ function renderTeacherWorkspace() {
   renderStars();
 }
 
+function escapeHtml(value) {
+  return String(value == null ? '' : value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 function updateTeacherCard() {
   const teacher = AppState.currentTeacher || { name: '负责老师', title: '巡检教师', dept: '托育教学部' };
   document.getElementById('current-teacher-name').textContent = teacher.name;
   document.getElementById('current-teacher-dept').textContent = (teacher.dept || '教学部') + ' · ' + (teacher.title || '主班教师');
+  const sessionStatus = document.getElementById('session-status-text');
+  if (sessionStatus) {
+    sessionStatus.textContent = AppState.sessionToken
+      ? '教师身份已认证 · 90天免登有效'
+      : '等待教师身份认证';
+  }
   
   const submitBtnText = document.getElementById('submit-btn-text');
   if (submitBtnText) {
@@ -230,10 +297,16 @@ function updateTeacherCard() {
 
   const avatarBox = document.getElementById('teacher-avatar-box');
   if (avatarBox) {
+    avatarBox.textContent = '';
     if (teacher.avatar) {
-      avatarBox.innerHTML = '<img src="' + teacher.avatar + '" alt="' + teacher.name + '" />';
+      const image = document.createElement('img');
+      image.src = teacher.avatar;
+      image.alt = teacher.name;
+      avatarBox.appendChild(image);
     } else {
-      avatarBox.innerHTML = '<span>' + (teacher.name.charAt(0) || '师') + '</span>';
+      const initial = document.createElement('span');
+      initial.textContent = teacher.name.charAt(0) || '师';
+      avatarBox.appendChild(initial);
     }
   }
 }
@@ -257,7 +330,7 @@ function renderChecklist() {
   container.innerHTML = items.map(function(item, idx) {
     return '<div class="check-item-row" data-idx="' + idx + '" onclick="toggleCheckItem(' + idx + ', this)">' +
       '<div class="check-box-icon">✓</div>' +
-      '<div class="check-text-content">' + item + '</div>' +
+      '<div class="check-text-content">' + escapeHtml(item) + '</div>' +
     '</div>';
   }).join('');
 
@@ -306,11 +379,22 @@ function handlePhotoCapture(event) {
   const files = event.target.files;
   if (!files || files.length === 0) return;
 
-  for (let i = 0; i < files.length; i++) {
+  const availableSlots = 5 - AppState.uploadedPhotos.length;
+  if (availableSlots <= 0) {
+    showToast('现场照片最多 5 张');
+    event.target.value = '';
+    return;
+  }
+
+  for (let i = 0; i < Math.min(files.length, availableSlots); i++) {
+    if (!/^image\/(?:jpeg|png|webp)$/i.test(files[i].type || '')) {
+      showToast('仅支持 JPEG、PNG 或 WebP 图片');
+      continue;
+    }
     const reader = new FileReader();
     reader.onload = function(e) {
       compressImage(e.target.result, 1200, 0.8, function(compressedB64) {
-        AppState.uploadedPhotos.push(compressedB64);
+        AppState.uploadedPhotos.push({ data: compressedB64, reference: '' });
         renderPhotoPreviews();
         showToast('照片已添加 📸');
       });
@@ -323,7 +407,7 @@ function renderPhotoPreviews() {
   const container = document.getElementById('photo-previews');
   container.innerHTML = AppState.uploadedPhotos.map(function(p, idx) {
     return '<div class="photo-thumb-item">' +
-      '<img src="' + p + '" />' +
+      '<img src="' + escapeHtml(p.data) + '" alt="现场照片 ' + (idx + 1) + '" />' +
       '<div class="photo-thumb-remove" onclick="removePhoto(' + idx + ')">×</div>' +
     '</div>';
   }).join('');
@@ -358,47 +442,75 @@ function compressImage(base64Data, maxDimension, quality, callback) {
     ctx.drawImage(img, 0, 0, width, height);
     callback(canvas.toDataURL('image/jpeg', quality));
   };
+  img.onerror = function() {
+    showToast('图片读取失败，请重新选择');
+  };
+}
+
+async function uploadPendingPhotos() {
+  for (let i = 0; i < AppState.uploadedPhotos.length; i += 1) {
+    const photo = AppState.uploadedPhotos[i];
+    if (photo.reference) continue;
+    const res = await fetch('/api/upload', {
+      method: 'POST',
+      headers: authorizedHeaders({ 'Content-Type': 'application/json' }),
+      body: JSON.stringify({ image: photo.data })
+    });
+    const result = await res.json();
+    if (!res.ok || !result.reference) {
+      throw new Error(result.error || '照片上传失败');
+    }
+    photo.reference = result.reference;
+  }
+  return AppState.uploadedPhotos.map(function(photo) { return photo.reference; });
 }
 
 async function submitPatrol() {
   const area = AppState.area;
-  const teacher = AppState.currentTeacher || { userid: '015018644521509971', name: '周士顶' };
+  const teacher = AppState.currentTeacher;
+  if (!teacher || !AppState.sessionToken) {
+    showDingTalkLoginPrompt();
+    showToast('请先完成教师身份认证');
+    return;
+  }
   
   const remarks = document.getElementById('patrol-remarks').value.trim();
   const checkItemsList = Array.from(AppState.selectedItems);
 
   const submitBtn = document.getElementById('submit-patrol-btn');
   submitBtn.disabled = true;
-  submitBtn.innerHTML = '<span>⏳ 正在以【' + teacher.name + '】老师身份写入钉钉AI表格...</span>';
-
-  const payload = {
-    areaId: area.id,
-    sheetId: area.sheetId,
-    areaName: area.name,
-    patrolType: '每日巡检',
-    userId: teacher.userid,
-    userName: teacher.name,
-    checkItems: checkItemsList,
-    ratings: AppState.ratings,
-    remarks: remarks,
-    photos: AppState.uploadedPhotos
-  };
+  submitBtn.innerHTML = '<span>⏳ 正在以【' + escapeHtml(teacher.name) + '】老师身份写入钉钉AI表格...</span>';
 
   try {
+    const photoReferences = await uploadPendingPhotos();
+    const payload = {
+      areaId: area.id,
+      patrolType: '每日巡检',
+      checkItems: checkItemsList,
+      ratings: AppState.ratings,
+      remarks: remarks,
+      photos: photoReferences
+    };
     const res = await fetch('/api/checkin', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: authorizedHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify(payload)
     });
 
     const result = await res.json();
-    if (result.success) {
+    if (res.ok && result.success) {
       showSuccessModal(result, teacher);
     } else {
+      if (res.status === 401) {
+        localStorage.removeItem(SESSION_STORAGE_KEY);
+        AppState.sessionToken = '';
+        AppState.currentTeacher = null;
+        showDingTalkLoginPrompt();
+      }
       alert('打卡失败: ' + (result.error || '未知错误'));
     }
   } catch (err) {
-    alert('网络异常，打卡提交失败，请重试');
+    alert(err && err.message ? err.message : '网络异常，打卡提交失败，请重试');
   } finally {
     submitBtn.disabled = false;
     updateTeacherCard();
@@ -421,16 +533,25 @@ function closeSuccessModal() {
 // -------------------------------------------------------------
 // Switch Teacher Modal
 // -------------------------------------------------------------
-function openSwitchTeacherModal() {
+async function openSwitchTeacherModal() {
   const modal = document.getElementById('switch-teacher-modal');
   const list = document.getElementById('staff-switch-list');
+  if ((!AppState.config.staff || AppState.config.staff.length === 0) && AppState.sessionToken) {
+    await refreshTeacherDirectory();
+  }
   const staff = AppState.config.staff || [];
+
+  if (staff.length === 0) {
+    showToast('教师名录暂不可用，请重新登录');
+    return;
+  }
   
   list.innerHTML = staff.map(function(s) {
-    return '<div class="staff-switch-option" onclick="selectTeacher(\'' + s.userid + '\')">' +
+    const encodedUserId = encodeURIComponent(s.userid);
+    return '<div class="staff-switch-option" onclick="selectTeacher(decodeURIComponent(\'' + encodedUserId + '\'))">' +
       '<div>' +
-        '<div style="font-weight:700; color:#222;">' + s.name + ' 老师</div>' +
-        '<div style="font-size:11px; color:#777;">' + (s.title || '教师') + ' · ' + (s.dept || '教学部') + '</div>' +
+        '<div style="font-weight:700; color:#222;">' + escapeHtml(s.name) + ' 老师</div>' +
+        '<div style="font-size:11px; color:#777;">' + escapeHtml(s.title || '教师') + ' · ' + escapeHtml(s.dept || '教学部') + '</div>' +
       '</div>' +
       '<div style="color:var(--primary); font-weight:700; font-size:12px;">选择并保持免登 →</div>' +
     '</div>';
@@ -443,15 +564,9 @@ function closeSwitchTeacherModal() {
   document.getElementById('switch-teacher-modal').classList.remove('active');
 }
 
-function selectTeacher(userid) {
-  const found = (AppState.config.staff || []).find(function(s) { return s.userid === userid; });
-  if (found) {
-    AppState.currentTeacher = found;
-    saveTeacherSession(found, DEFAULT_EXPIRY_DAYS);
-    updateTeacherCard();
-    closeSwitchTeacherModal();
-    showToast('已切换为：' + found.name + ' 老师 (90天免登有效)');
-  }
+async function selectTeacher(userid) {
+  const success = await authenticateManualTeacher(userid);
+  if (success) closeSwitchTeacherModal();
 }
 
 function renderParentView() {
@@ -461,7 +576,7 @@ function renderParentView() {
 
   if (area.detailImages && area.detailImages.length > 0) {
     container.innerHTML = area.detailImages.map(function(imgUrl, idx) {
-      return '<img src="' + imgUrl + '" alt="' + area.name + ' 空间教育解读 ' + (idx + 1) + '" class="parent-pure-img" loading="' + (idx === 0 ? 'eager' : 'lazy') + '" />';
+      return '<img src="' + escapeHtml(imgUrl) + '" alt="' + escapeHtml(area.name) + ' 空间教育解读 ' + (idx + 1) + '" class="parent-pure-img" loading="' + (idx === 0 ? 'eager' : 'lazy') + '" />';
     }).join('');
   }
 }
@@ -508,16 +623,22 @@ function renderQuickStaffList(filterText) {
            (s.title && s.title.toLowerCase().includes(keyword));
   });
 
+  if (staff.length === 0) {
+    container.innerHTML = '<div style="font-size:12px; color:#666; text-align:center; padding:16px;">输入教师名录访问口令后，才会显示在册人员。</div>';
+    return;
+  }
+
   if (filtered.length === 0) {
     container.innerHTML = '<div style="font-size:12px; color:#888; text-align:center; padding:16px;">未找到匹配教师</div>';
     return;
   }
 
   container.innerHTML = filtered.map(function(s) {
-    return '<div class="staff-switch-option" onclick="quickLoginAsTeacher(\'' + s.userid + '\')" style="padding:8px 10px;">' +
+    const encodedUserId = encodeURIComponent(s.userid);
+    return '<div class="staff-switch-option" onclick="quickLoginAsTeacher(decodeURIComponent(\'' + encodedUserId + '\'))" style="padding:8px 10px;">' +
       '<div>' +
-        '<div style="font-weight:700; color:#222; font-size:13px;">' + s.name + ' <span style="font-size:11px; font-weight:normal; color:#666;">老师</span></div>' +
-        '<div style="font-size:11px; color:#888;">' + (s.dept || '教学部') + ' · ' + (s.title || '教师') + '</div>' +
+        '<div style="font-weight:700; color:#222; font-size:13px;">' + escapeHtml(s.name) + ' <span style="font-size:11px; font-weight:normal; color:#666;">老师</span></div>' +
+        '<div style="font-size:11px; color:#888;">' + escapeHtml(s.dept || '教学部') + ' · ' + escapeHtml(s.title || '教师') + '</div>' +
       '</div>' +
       '<div style="color:var(--primary); font-weight:700; font-size:12px;">确认绑定 →</div>' +
     '</div>';
@@ -528,17 +649,47 @@ function filterStaffList(text) {
   renderQuickStaffList(text);
 }
 
-function quickLoginAsTeacher(userid) {
-  const found = (AppState.config.staff || []).find(function(s) { return s.userid === userid; });
-  if (found) {
-    AppState.currentTeacher = found;
-    saveTeacherSession(found, DEFAULT_EXPIRY_DAYS);
-    
-    const modal = document.getElementById('login-prompt-modal');
-    if (modal) modal.classList.remove('active');
-    
-    renderTeacherWorkspace();
-    setupEventListeners();
-    showToast('🎉 已成功绑定：' + found.name + ' 老师 (90天免登有效)');
+async function authenticateManualTeacher(userid) {
+  let passcode = AppState.manualPasscode;
+  if (!passcode) {
+    const input = document.getElementById('manual-passcode-input');
+    passcode = input ? input.value : '';
   }
+  if (!passcode) passcode = window.prompt('请输入教师名录访问口令') || '';
+  if (!passcode) return false;
+
+  try {
+    const res = await fetch('/api/dingtalk-login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId: userid, passcode: passcode })
+    });
+    const data = await res.json();
+    if (!res.ok || !data.success || !data.user || !data.session || !data.session.token) {
+      showToast(data.error || '教师身份认证失败');
+      return false;
+    }
+    AppState.manualPasscode = passcode;
+    AppState.currentTeacher = data.user;
+    AppState.sessionToken = data.session.token;
+    saveTeacherSession(data.user, data.session);
+    AppState.manualPasscode = '';
+    const passcodeInput = document.getElementById('manual-passcode-input');
+    if (passcodeInput) passcodeInput.value = '';
+    updateTeacherCard();
+    showToast('已认证为：' + data.user.name + ' 老师 (90天免登有效)');
+    return true;
+  } catch (error) {
+    showToast('教师身份认证失败，请稍后重试');
+    return false;
+  }
+}
+
+async function quickLoginAsTeacher(userid) {
+  const success = await authenticateManualTeacher(userid);
+  if (!success) return;
+  const modal = document.getElementById('login-prompt-modal');
+  if (modal) modal.classList.remove('active');
+  renderTeacherWorkspace();
+  setupEventListeners();
 }
